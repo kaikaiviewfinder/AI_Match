@@ -1,0 +1,122 @@
+<launch>
+  <!-- ═══════════════════════════════════════════════════════════════
+       Hiking Route Localization — Full Hardware Integration
+       VINS-Fusion (mono+IMU) + GPS + STM32 Barometer → Route Matcher
+
+       Usage:
+         roslaunch hiking_route_localization hiking_full.launch
+         roslaunch hiking_route_localization hiking_full.launch route_csv:=/path/to/your_route.csv
+
+       Hardware requirements:
+         - Camera + IMU (phone / Realsense / custom)
+         - GPS module (USB serial, NMEA output)
+         - STM32 with barometer (serial, altitude output)
+         - Known route CSV (generated from GPX)
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- ── Route ── -->
+  <arg name="route_csv" default="$(find hiking_route_localization)/data/demo_route.csv"
+       doc="Path to route_table.csv (generate from GPX with gpx_to_route.py)" />
+
+  <!-- ── VINS-Fusion config ── -->
+  <arg name="vins_config" default="$(find vins)/../config/hiking/hiking_mono_imu_config.yaml"
+       doc="VINS-Fusion mono+imu YAML config" />
+
+  <!-- ── Camera / IMU topics ── -->
+  <arg name="cam_topic" default="/cam0/image_raw" doc="Camera image topic" />
+  <arg name="imu_topic" default="/imu0" doc="IMU topic" />
+
+  <!-- ── GPS serial ── -->
+  <arg name="gps_port" default="/dev/ttyUSB0" doc="GPS serial port" />
+  <arg name="gps_baud" default="9600" doc="GPS baud rate" />
+  <arg name="gps_enabled" default="true" doc="Enable GPS serial reader" />
+  <arg name="gps_simulate" default="false" doc="Simulate GPS instead of real serial" />
+
+  <!-- ── Barometer serial ── -->
+  <arg name="baro_port" default="/dev/ttyUSB1" doc="STM32/baro serial port" />
+  <arg name="baro_baud" default="115200" doc="STM32/baro baud rate" />
+  <arg name="baro_enabled" default="true" doc="Enable barometer serial reader" />
+  <arg name="baro_simulate" default="false" doc="Simulate barometer instead of real serial" />
+  <arg name="baro_type" default="bme280" doc="Barometer type: 'bme280' (BME280 STM32) or 'simple' (altitude-only lines)" />
+  <arg name="sea_level_hpa" default="1013.25" doc="Sea-level reference pressure (hPa) for BME280 → altitude conversion" />
+
+  <!-- ── RViz ── -->
+  <arg name="rviz" default="true" doc="Start RViz for visualization" />
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step 1: VINS-Fusion (mono + IMU → visual-inertial odometry)
+       Publishes: /vins_estimator/odometry
+       ═══════════════════════════════════════════════════════════════ -->
+  <node pkg="vins" type="vins_node" name="vins_estimator" output="screen"
+        required="true">
+    <param name="config_file" value="$(arg vins_config)" />
+  </node>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step 2: GPS (NMEA serial → NavSatFix)
+       Publishes: /gps
+       ═══════════════════════════════════════════════════════════════ -->
+  <node if="$(arg gps_enabled)" pkg="hiking_route_localization"
+        type="nmea_gps_node.py" name="nmea_gps_node" output="screen">
+    <param name="port" value="$(arg gps_port)" />
+    <param name="baud" value="$(arg gps_baud)" />
+    <param name="simulate" value="$(arg gps_simulate)" />
+  </node>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step 3: Barometric Altitude (STM32/BME280 serial → Float64)
+       Publishes: /baro_altitude (+ /baro_altitude/temperature, /baro_altitude/pressure)
+       ═══════════════════════════════════════════════════════════════ -->
+  <node if="$(arg baro_enabled)" pkg="hiking_route_localization"
+        type="bme280_altitude_node.py" name="bme280_altitude_node" output="screen">
+    <param name="port" value="$(arg baro_port)" />
+    <param name="baud" value="$(arg baro_baud)" />
+    <param name="simulate" value="$(arg baro_simulate)" />
+    <param name="sea_level_hpa" value="$(arg sea_level_hpa)" />
+  </node>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step 4: Route Matcher (Particle Filter)
+       Subscribes: /vins_estimator/odometry + /gps + /baro_altitude
+       Publishes:  /route_matcher/state, /route_matcher/matched_odometry,
+                   /route_matcher/progress
+       ═══════════════════════════════════════════════════════════════ -->
+  <node pkg="hiking_route_localization" type="route_matcher_node.py"
+        name="route_matcher" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+    <param name="num_particles" value="1500" />
+    <param name="uniform_init_without_gps" value="false" />
+    <param name="initial_s" value="0.0" />
+    <param name="initial_std_m" value="50.0" />
+
+    <!-- Sensor noise (tune for your hardware) -->
+    <param name="sigma_gps" value="12.0" />
+    <param name="sigma_alt" value="5.0" />
+    <param name="sigma_slope" value="2.0" />
+    <param name="sigma_motion" value="1.5" />
+    <param name="motion_noise" value="0.5" />
+
+    <!-- Fusion weights -->
+    <param name="weight_gps" value="0.8" />
+    <param name="weight_alt" value="1.0" />
+    <param name="weight_slope" value="0.6" />
+    <param name="weight_motion" value="0.9" />
+
+    <!-- Auto-calibrate barometer offset on first route match -->
+    <param name="auto_baro_offset" value="true" />
+  </node>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Step 5: Route Visualizer (RViz markers)
+       Subscribes: /route_matcher/state
+       Publishes:  /route_matcher/markers
+       ═══════════════════════════════════════════════════════════════ -->
+  <node pkg="hiking_route_localization" type="route_visualizer_node.py"
+        name="route_visualizer" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+  </node>
+
+  <!-- ── RViz ── -->
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz"
+        args="-d $(find hiking_route_localization)/config/hiking_rviz.rviz" />
+</launch>

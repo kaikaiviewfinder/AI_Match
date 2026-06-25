@@ -1,0 +1,31 @@
+<launch>
+  <arg name="route_csv" default="$(find hiking_route_localization)/data/demo_route.csv" />
+  <arg name="rviz" default="false" />
+
+  <node pkg="hiking_route_localization" type="demo_sensor_player.py" name="demo_sensor_player" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+    <param name="speed_mps" value="1.2" />
+    <param name="gps_noise_m" value="6.0" />
+    <param name="gps_dropout_ratio" value="0.45" />
+  </node>
+
+  <node pkg="hiking_route_localization" type="route_matcher_node.py" name="route_matcher" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+    <param name="initial_s" value="0.0" />
+    <param name="initial_std_m" value="15.0" />
+    <param name="num_particles" value="1200" />
+    <param name="sigma_gps" value="8.0" />
+    <param name="sigma_alt" value="4.0" />
+    <param name="weight_gps" value="1.0" />
+    <param name="weight_alt" value="0.9" />
+    <param name="weight_slope" value="0.4" />
+    <param name="weight_motion" value="0.8" />
+    <param name="auto_baro_offset" value="false" />
+  </node>
+
+  <node pkg="hiking_route_localization" type="route_visualizer_node.py" name="route_visualizer" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+  </node>
+
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="" />
+</launch>

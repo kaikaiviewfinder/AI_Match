@@ -1,0 +1,40 @@
+<launch>
+  <!-- 修改成你的已知路线 CSV。可以由 scripts/gpx_to_route.py 从 GPX 生成。 -->
+  <arg name="route_csv" default="$(find hiking_route_localization)/data/demo_route.csv" />
+  <arg name="serial_port" default="/dev/ttyUSB0" />
+  <arg name="serial_baud" default="115200" />
+  <arg name="start_serial_altitude" default="true" />
+
+  <!-- 真实设备时，VINS-Fusion 需要你单独启动；本 launch 只负责路线匹配。 -->
+  <node if="$(arg start_serial_altitude)" pkg="hiking_route_localization" type="serial_altitude_node.py" name="serial_altitude_node" output="screen">
+    <param name="port" value="$(arg serial_port)" />
+    <param name="baud" value="$(arg serial_baud)" />
+    <param name="simulate" value="false" />
+  </node>
+
+  <node pkg="hiking_route_localization" type="route_matcher_node.py" name="route_matcher" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+    <param name="num_particles" value="1500" />
+    <param name="uniform_init_without_gps" value="false" />
+    <param name="initial_s" value="0.0" />
+    <param name="initial_std_m" value="50.0" />
+
+    <!-- 根据传感器质量调参 -->
+    <param name="sigma_gps" value="12.0" />
+    <param name="sigma_alt" value="5.0" />
+    <param name="sigma_slope" value="2.0" />
+    <param name="sigma_motion" value="1.5" />
+    <param name="motion_noise" value="0.5" />
+    <param name="weight_gps" value="0.8" />
+    <param name="weight_alt" value="1.0" />
+    <param name="weight_slope" value="0.6" />
+    <param name="weight_motion" value="0.9" />
+
+    <!-- 气压计建议自动校准偏置：首次有路线估计后，把气压高度对齐到路线海拔。 -->
+    <param name="auto_baro_offset" value="true" />
+  </node>
+
+  <node pkg="hiking_route_localization" type="route_visualizer_node.py" name="route_visualizer" output="screen">
+    <param name="route_csv" value="$(arg route_csv)" />
+  </node>
+</launch>

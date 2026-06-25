@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hiking_route_localization</name>
+  <version>0.1.0</version>
+  <description>Route-constrained localization for hiking route matching using VINS odometry, intermittent GPS and barometric altitude.</description>
+  <maintainer email="user@example.com">kekaiwu</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+
+  <export/>
+</package>
