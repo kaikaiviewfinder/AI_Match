@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563EB;
+  --color-primary-light: #3B82F6;
+  --color-primary-bg: #EFF6FF;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #06B6D4;
+  --color-title: #0F172A;
+  --color-body: #334155;
+  --color-muted: #64748B;
+  --color-border: #E2E8F0;
+  --color-page: #F8FAFC;
+}
+
+body {
+  font-family: 'Inter', 'SF Pro Display', 'HarmonyOS Sans', system-ui, sans-serif;
+  background: #F8FAFC;
+  color: #334155;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+/* Leaflet overrides */
+.leaflet-container { border-radius: 12px; }
