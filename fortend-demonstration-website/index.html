@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图寻 · TU XUN — 离线地理定位系统</title>
+<style>
+:root {
+  --cyan: #00FFFF; --cyan2: #00c8c8; --cyan3: rgba(0,255,255,0.15);
+  --red: #FF0040; --orange: #ff8c00; --green: #00e85c;
+  --bg: #08081a; --surface: rgba(12,12,36,0.85); --surface2: rgba(16,16,44,0.75);
+  --text: rgba(255,255,255,0.92); --text2: rgba(255,255,255,0.55); --text3: rgba(255,255,255,0.25);
+  --border: rgba(0,255,255,0.12); --border2: rgba(0,255,255,0.06);
+  --glow: 0 0 20px rgba(0,255,255,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; scroll-snap-type: y mandatory; }
+body {
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', monospace;
+  background: var(--bg); color: var(--text);
+  overflow-x: hidden; line-height: 1.6;
+}
+
+/* ===== Background Canvas ===== */
+#bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+#particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: auto; }
+
+/* ===== Light bands ===== */
+.light-band { position: fixed; top: 0; width: 1px; height: 100%; z-index: 0; pointer-events: none; opacity: 0.3; }
+.light-band.left  { left: 80px;  background: linear-gradient(180deg, transparent 0%, var(--cyan) 30%, var(--cyan) 70%, transparent 100%); animation: bandFlow 4s ease-in-out infinite; }
+.light-band.right { right: 80px; background: linear-gradient(180deg, transparent 0%, var(--cyan) 70%, var(--cyan) 30%, transparent 100%); animation: bandFlow 4s ease-in-out infinite reverse; }
+@keyframes bandFlow { 0%,100%{opacity:0.15} 50%{opacity:0.45} }
+
+/* ===== Navigation ===== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,8,26,0.88); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem; transition: border-color 0.5s;
+}
+.nav.warning { border-color: rgba(255,140,0,0.4); }
+.nav.critical { border-color: rgba(255,0,64,0.5); }
+.nav-logo { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.06em; color: var(--cyan); text-shadow: 0 0 18px rgba(0,255,255,0.5); }
+.nav-logo .sub { color: var(--text3); font-weight: 400; font-size: 0.75rem; margin-left: 0.6rem; letter-spacing: 0.04em; }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a { color: var(--text3); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.08em; transition: all 0.3s; position: relative; }
+.nav-links a:hover, .nav-links a.active { color: var(--cyan); text-shadow: 0 0 14px rgba(0,255,255,0.6); }
+.nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.nav-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; color: var(--text2); letter-spacing: 0.06em; }
+.nav-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: dotPulse 2s ease-in-out infinite; }
+@keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ===== Screens ===== */
+.screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 5rem 3rem 3rem; position: relative; z-index: 1; scroll-snap-align: start; }
+.screen-inner { max-width: 1200px; width: 100%; }
+
+/* ===== Section headers ===== */
+.sec-badge { display: inline-block; padding: 0.2rem 0.8rem; border: 1px solid var(--border); font-size: 0.68rem; letter-spacing: 0.14em; color: var(--cyan); margin-bottom: 1rem; }
+.sec-title { font-size: 2.2rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; letter-spacing: 0.03em; }
+.sec-title span { color: var(--cyan); }
+.sec-desc { font-size: 0.9rem; color: var(--text2); max-width: 580px; margin-bottom: 2rem; }
+
+/* ===== Screen 0 - HOME ===== */
+.home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+.home-left { }
+.home-left .mega-num { font-size: 5.5rem; font-weight: 900; line-height: 1; color: var(--cyan); text-shadow: 0 0 60px rgba(0,255,255,0.3); letter-spacing: 0.02em; }
+.home-left .mega-label { font-size: 1rem; color: var(--text2); letter-spacing: 0.1em; margin-top: 0.3rem; }
+.home-left .mega-sub  { font-size: 0.8rem; color: var(--text3); margin-top: 0.2rem; }
+.metric-row { display: flex; gap: 1.5rem; margin-top: 2rem; }
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1.2rem 1.5rem; min-width: 130px;
+  transition: all 0.3s;
+}
+.metric-card:hover { border-color: var(--border); box-shadow: var(--glow); }
+.metric-card .val { font-size: 1.8rem; font-weight: 800; color: var(--text); }
+.metric-card .lbl { font-size: 0.7rem; color: var(--text3); letter-spacing: 0.06em; margin-top: 0.2rem; }
+.metric-card.warn .val { color: var(--orange); }
+.metric-card.ok   .val { color: var(--green); }
+
+.home-right { position: relative; }
+.pipeline-ring { position: relative; width: 320px; height: 320px; margin: 0 auto; }
+.pipeline-ring .ring-node {
+  position: absolute; width: 62px; height: 62px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: var(--text2); transition: all 0.4s;
+}
+.pipeline-ring .ring-node:hover { border-color: var(--cyan); box-shadow: var(--glow); color: var(--cyan); }
+.pipeline-ring .ring-node .icon { font-size: 1.2rem; }
+.pipeline-ring .ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 80px; height: 80px; border-radius: 50%; background: rgba(0,255,255,0.06); border: 2px solid var(--cyan); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: var(--cyan); text-shadow: 0 0 16px rgba(0,255,255,0.5); box-shadow: 0 0 30px rgba(0,255,255,0.1); animation: centerPulse 3s ease-in-out infinite; }
+@keyframes centerPulse { 0%,100%{box-shadow: 0 0 20px rgba(0,255,255,0.08)} 50%{box-shadow: 0 0 45px rgba(0,255,255,0.25)} }
+
+/* ===== Glass cards ===== */
+.glass-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+.glass-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 1.5rem; transition: all 0.35s;
+  position: relative; overflow: hidden;
+}
+.glass-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0; transition: opacity 0.35s; }
+.glass-card:hover { border-color: var(--border); transform: translateY(-4px); box-shadow: var(--glow); }
+.glass-card:hover::before { opacity: 1; }
+.glass-card .card-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+.glass-card h4 { font-size: 0.95rem; color: var(--text); margin-bottom: 0.4rem; letter-spacing: 0.02em; }
+.glass-card p  { font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+.glass-card .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.tag { padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em; border: 1px solid; }
+.tag-cyan { border-color: rgba(0,255,255,0.2); color: var(--cyan); background: rgba(0,255,255,0.05); }
+
+/* ===== Engineering cards (Screen 2) ===== */
+.eng-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.eng-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-left: 3px solid rgba(0,255,255,0.25); border-radius: 0 10px 10px 0;
+  padding: 1.2rem 1.3rem; transition: all 0.3s;
+}
+.eng-card:hover { border-left-color: var(--cyan); background: rgba(16,20,44,0.9); }
+.eng-card .idx { font-size: 1.6rem; font-weight: 900; color: rgba(0,255,255,0.1); float: right; line-height: 1; }
+.eng-card h4 { font-size: 0.88rem; color: var(--text); margin-bottom: 0.3rem; }
+.eng-card p  { font-size: 0.78rem; color: var(--text2); }
+
+/* ===== Trajectory Canvas (Screen 2) ===== */
+.map-wrap { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 0.8rem; margin-top: 1.8rem; }
+.map-wrap canvas { width: 100%; height: 280px; display: block; border-radius: 8px; }
+.map-legend { display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text3); }
+.map-legend span { display: flex; align-items: center; gap: 0.35rem; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+.leg-dot.vio { background: #5b8def; } .leg-dot.gps { background: var(--orange); } .leg-dot.match { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+
+/* ===== GeoCoT (Screen 3) ===== */
+.cot-flow { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+.cot-step {
+  display: flex; align-items: center; gap: 1.2rem;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1rem 1.3rem; transition: all 0.5s;
+  opacity: 0.4; cursor: default;
+}
+.cot-step.active { opacity: 1; border-color: rgba(0,200,200,0.3); box-shadow: 0 0 20px rgba(0,200,200,0.06); }
+.cot-step .step-badge {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; border: 2px solid rgba(0,200,200,0.2);
+  color: var(--cyan); background: rgba(0,255,255,0.05);
+}
+.cot-step.active .step-badge { border-color: var(--cyan); background: rgba(0,255,255,0.1); box-shadow: 0 0 14px rgba(0,255,255,0.2); }
+.cot-step .step-body h5 { font-size: 0.88rem; color: var(--text); margin-bottom: 0.15rem; }
+.cot-step .step-body p  { font-size: 0.78rem; color: var(--text2); }
+.cot-nav { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.8rem; }
+.cot-nav button {
+  background: var(--surface); border: 1px solid rgba(0,200,200,0.2);
+  color: var(--cyan); padding: 0.4rem 1rem; border-radius: 6px;
+  cursor: pointer; font-size: 0.78rem; letter-spacing: 0.04em; transition: all 0.25s;
+}
+.cot-nav button:hover { background: rgba(0,255,255,0.06); border-color: var(--cyan); }
+.cot-nav button:disabled { opacity: 0.2; cursor: not-allowed; }
+
+/* ===== Arch flow (Screen 3) ===== */
+.arch-flow { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; align-items: center; margin: 1rem 0; }
+.arch-node {
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 9px;
+  padding: 0.7rem 1rem; text-align: center; font-size: 0.75rem; transition: all 0.3s;
+}
+.arch-node:hover { border-color: rgba(0,200,200,0.35); }
+.arch-node .name { color: var(--text); font-weight: 600; }
+.arch-node .dim  { color: var(--text3); font-size: 0.67rem; margin-top: 0.1rem; }
+.arch-arrow { color: var(--text3); font-size: 0.9rem; }
+.vision-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 2rem; }
+
+/* ===== Screen 4 - PROJECT particles ===== */
+#tuxunCanvas { border-radius: 14px; }
+.project-content { text-align: center; position: relative; z-index: 2; }
+.project-content .title { font-size: 2.5rem; font-weight: 800; color: var(--text); letter-spacing: 0.05em; }
+.project-content .title span { color: var(--cyan); }
+.project-content .desc { font-size: 0.9rem; color: var(--text2); max-width: 580px; margin: 1rem auto 2rem; }
+
+/* ===== Footer ===== */
+.footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border2); color: var(--text3); font-size: 0.72rem; letter-spacing: 0.06em; position: relative; z-index: 1; }
+
+/* ===== Music Button ===== */
+.music-btn {
+  position: fixed; top: 70px; right: 2rem; z-index: 101;
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--cyan); display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; transition: all 0.3s;
+}
+.music-btn:hover { box-shadow: var(--glow); }
+.music-btn.playing { animation: musicPulse 1.5s ease-in-out infinite; border-color: var(--cyan); }
+@keyframes musicPulse { 0%,100%{box-shadow: 0 0 10px rgba(0,255,255,0.2)} 50%{box-shadow: 0 0 25px rgba(0,255,255,0.5)} }
+
+/* ===== Screen indicator dots ===== */
+.screen-dots {
+  position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 0.8rem; z-index: 99;
+}
+.screen-dots .dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--text3);
+  cursor: pointer; transition: all 0.3s;
+}
+.screen-dots .dot:hover, .screen-dots .dot.active { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .home-grid { grid-template-columns: 1fr; }
+  .eng-grid { grid-template-columns: 1fr; }
+  .vision-2col { grid-template-columns: 1fr; }
+  .nav-links { gap: 1rem; }
+  .light-band { display: none; }
+  .screen-dots { display: none; }
+  .screen { padding: 4rem 1.2rem 2rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<canvas id="particleCanvas"></canvas>
+<div class="light-band left"></div>
+<div class="light-band right"></div>
+
+<!-- ===== Navigation ===== -->
+<nav class="nav" id="topNav">
+  <div class="nav-logo">图寻<span class="sub">TU XUN</span></div>
+  <ul class="nav-links">
+    <li><a href="#home" class="active">HOME</a></li>
+    <li><a href="#sensor">SENSOR</a></li>
+    <li><a href="#trajectory">TRAJECTORY</a></li>
+    <li><a href="#vision">VISION AI</a></li>
+    <li><a href="#project">PROJECT</a></li>
+  </ul>
+  <div class="nav-status"><span class="dot"></span> DK-2500 · ONLINE</div>
+</nav>
+
+<!-- ===== Music Button ===== -->
+<div class="music-btn" id="musicBtn" title="Ambient">♪</div>
+
+<!-- ===== Screen Dots ===== -->
+<div class="screen-dots" id="screenDots">
+  <span class="dot active" data-screen="0"></span>
+  <span class="dot" data-screen="1"></span>
+  <span class="dot" data-screen="2"></span>
+  <span class="dot" data-screen="3"></span>
+  <span class="dot" data-screen="4"></span>
+</div>
+
+<!-- ================================================ -->
+<!--  SCREEN 0 — HOME · 系统概览                        -->
+<!-- ================================================ -->
+<section class="screen" id="home">
+<div class="screen-inner">
+  <div class="home-grid">
+    <div class="home-left">
+      <div class="sec-badge">INTEL CUP · EMBEDDED AI</div>
+      <div class="mega-num">0.8<span style="font-size:2rem;">m</span></div>
+      <div class="mega-label">实时定位精度</div>
+      <div class="mega-sub">亚米级 · 多传感器融合轨迹匹配</div>
+        <!-- 双路线标识 -->
+        <div style="margin-top:1.5rem;display:flex;gap:0.8rem;align-items:center;font-size:0.72rem;color:var(--text3);letter-spacing:0.05em;">
+          <span style="color:var(--cyan);">■</span> 传感器定位 · 成熟可靠
+          <span style="margin-left:1rem;color:#ffa03c;">■</span> 视觉推理 · 前瞻探索
+          <span style="margin-left:1rem;color:var(--text3);">同一场景 · 两条路径</span>
+        </div>
+      <div class="metric-row">
+        <div class="metric-card ok"><div class="val">4</div><div class="lbl">传感器子系统</div></div>
+        <div class="metric-card"><div class="val">200<span style="font-size:0.7rem;">Hz</span></div><div class="lbl">VIO 位姿频率</div></div>
+        <div class="metric-card"><div class="val">63K+</div><div class="lbl">行工程代码</div></div>
+        <div class="metric-card ok"><div class="val">ONLINE</div><div class="lbl">DK-2500 部署状态</div></div>
+      </div>
+    </div>
+    <div class="home-right">
+      <div class="pipeline-ring">
+        <div class="ring-node" style="top:0%;left:50%;transform:translate(-50%,-50%);"><span class="icon">🛰️</span>GPS/BDS</div>
+        <div class="ring-node" style="top:20%;right:-15px;"><span class="icon">📡</span>BME280</div>
+        <div class="ring-node" style="bottom:20%;right:-15px;"><span class="icon">📷</span>VINS</div>
+        <div class="ring-node" style="bottom:0%;left:50%;transform:translate(-50%,50%);"><span class="icon">🗺️</span>路径匹配</div>
+        <div class="ring-node" style="bottom:20%;left:-15px;"><span class="icon">📍</span>定位输出</div>
+        <div class="ring-node" style="top:20%;left:-15px;"><span class="icon">📐</span>标定</div>
+        <div class="ring-center">图寻</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================ -->
+<!--  SCREEN 1 — SENSOR · 传感器定位系统                -->
+<!-- ================================================ -->
+<section class="screen" id="sensor">
+<div class="screen-inner">
+  <div class="sec-badge">PROVEN · 成熟可靠</div>
+  <div class="sec-title">传感器定位<span>流水线</span></div>
+  <div class="sec-desc">GPS + IMU + BME280 气压计 + 相机 → VINS-Fusion VIO → GPX 路径匹配 → 亚米级定位。全链路 C++/Python/C 实现，已在真实户外环境中验证端到端闭环，可直接部署于 DK-2500 嵌入式平台。</div>
+
+  <div class="glass-grid">
+    <div class="glass-card">
+      <div class="card-icon">🔧</div>
+      <h4>BME280 嵌入式固件</h4>
+      <p>STM32F103 微控制器，I2C 协议采集温度/气压/湿度，实时解算海拔高度并通过串口推送至 ROS 节点。</p>
+      <div class="tags"><span class="tag tag-cyan">STM32</span><span class="tag tag-cyan">I2C</span><span class="tag tag-cyan">C</span><span class="tag tag-cyan">Keil MDK</span></div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">🧭</div>
+      <h4>VINS-Fusion 里程计</h4>
+      <p>单/双目 + IMU 紧耦合 SLAM，回环检测消除累积漂移，全局位姿图优化。支持在线实时与离线批量双模式。</p>
+      <div class="tags"><span class="tag tag-cyan">C++</span><span class="tag tag-cyan">ROS</span><span class="tag tag-cyan">Ceres Solver</span><span class="tag tag-cyan">VIO</span></div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">🗺️</div>
+      <h4>ROS 路径匹配引擎</h4>
+      <p>融合 GPS 轨迹 + 气压高度 + VIO 位姿，与 GPX 路径库实时空间-时间双维度对齐，输出位置及置信度。</p>
+      <div class="tags"><span class="tag tag-cyan">Python</span><span class="tag tag-cyan">ROS</span><span class="tag tag-cyan">GPX</span><span class="tag tag-cyan">RViz</span></div>
+    </div>
+    <div class="glass-card">
+      <div class="card-icon">📐</div>
+      <h4>传感器标定体系</h4>
+      <p>相机内参 (pinhole/mei/cata) + IMU 6-DoF 外参预标定，多相机模型支持，确保 VIO 初始化成功率与估计精度。</p>
+      <div class="tags"><span class="tag tag-cyan">Kalibr</span><span class="tag tag-cyan">YAML</span><span class="tag tag-cyan">Multi-Cam</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================ -->
+<!--  SCREEN 2 — TRAJECTORY · 轨迹可视化                -->
+<!-- ================================================ -->
+<section class="screen" id="trajectory">
+<div class="screen-inner">
+  <div class="sec-badge">FIELD TESTED · 实测验证</div>
+  <div class="sec-title">轨迹<span>匹配</span>可视化</div>
+  <div class="sec-desc">基于深圳塘朗山实测数据回放。虚线为 VIO 重建轨迹，橙色点为 GPS 采样，青色段为实时路径匹配结果。</div>
+
+  <div class="eng-grid">
+    <div class="eng-card"><div class="idx">01</div><h4>全链路闭环</h4><p>嵌入式固件 → ROS 驱动 → SLAM → 可视化，每层独立可替换，链路完整可运行。</p></div>
+    <div class="eng-card"><div class="idx">02</div><h4>多源紧耦合</h4><p>GPS 绝对锚点 + BME280 海拔约束 + VIO 200Hz 位姿，三者互补：GPS 遮挡恢复、VIO 漂移纠正。</p></div>
+    <div class="eng-card"><div class="idx">03</div><h4>路径先验库</h4><p>预装载 GPX 轨迹库，匹配引擎实时计算当前轨迹与库中路径的相似度，空间+时间双维度对齐。</p></div>
+    <div class="eng-card"><div class="idx">04</div><h4>嵌入式就绪</h4><p>BME280 固件适配 STM32F103，VINS-Fusion 支持 ARM 交叉编译，ROS 节点可部署树莓派/DK-2500。</p></div>
+    <div class="eng-card"><div class="idx">05</div><h4>模块化松耦合</h4><p>GPS/BME280/VIO/匹配各自独立 ROS node，topic 通信。单传感器失效系统可降级运行。</p></div>
+    <div class="eng-card"><div class="idx">06</div><h4>仿真+实采</h4><p>支持离线数据回放 (demo_sensor_player) 与在线实时采集，无需每次实地测试，大幅降低迭代成本。</p></div>
+  </div>
+
+  <div class="map-wrap">
+    <canvas id="trajCanvas"></canvas>
+    <div class="map-legend">
+      <span><span class="leg-dot vio"></span> VIO 轨迹重建</span>
+      <span><span class="leg-dot gps"></span> GPS 采样点</span>
+      <span><span class="leg-dot match"></span> 实时匹配段</span>
+      <span style="margin-left:1rem;color:var(--text3);">坐标: 113.95°E 22.53°N · 塘朗山</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================ -->
+<!--  SCREEN 3 — VISION AI · 视觉推理                  -->
+<!-- ================================================ -->
+<section class="screen" id="vision">
+<div class="screen-inner">
+  <div class="sec-badge">FUTURE · 前瞻探索</div>
+  <div class="sec-title">视觉语义<span>推理</span></div>
+  <div class="sec-desc">面向未来的学术前沿方向——仅凭单张图像，零先验知识，通过类人地理推理逐步缩小搜索空间。无需预存路径库、无需 GPS 信号，在任何陌生区域均可推理大致位置。</div>
+
+  <h4 style="color:var(--text2);font-size:0.85rem;letter-spacing:0.06em;margin-bottom:0.5rem;">GeoCoT 地理思维链推理</h4>
+  <div class="cot-flow" id="cotFlow">
+    <div class="cot-step active" data-step="0">
+      <div class="step-badge">I</div>
+      <div class="step-body"><h5>宏观 · 气候与植被</h5><p>分析植被类型、天空色调、日照角度 → 推断气候带与大致纬度范围</p></div>
+    </div>
+    <div class="cot-step" data-step="1">
+      <div class="step-badge">II</div>
+      <div class="step-body"><h5>中观 · 地形与建筑</h5><p>识别地形起伏、建筑风格、土壤颜色 → 缩小至国家/地区级别</p></div>
+    </div>
+    <div class="cot-step" data-step="2">
+      <div class="step-badge">III</div>
+      <div class="step-body"><h5>微观 · 语言与标识</h5><p>检测文字系统、车牌样式、交通标识 → 精确定位至城市/区域</p></div>
+    </div>
+  </div>
+  <div class="cot-nav">
+    <button id="cotPrev" disabled>← PREV</button>
+    <button id="cotNext">NEXT →</button>
+    <button id="cotAuto">▶ AUTO</button>
+  </div>
+
+  <div class="vision-2col">
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:1.3rem;">
+      <h5 style="color:var(--text);font-size:0.85rem;margin-bottom:0.5rem;">GeoVLM 430M 模型架构</h5>
+      <div class="arch-flow" style="justify-content:flex-start;">
+        <div class="arch-node"><div class="name">MultiScale Encoder</div><div class="dim">224/448/672</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="name">Q-Former</div><div class="dim">9 queries</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="name">GNN</div><div class="dim">GraphSAGE</div></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node"><div class="name">Heads</div><div class="dim">8 cls + 1 reg</div></div>
+      </div>
+      <p style="font-size:0.76rem;color:var(--text2);margin-top:0.6rem;">9 维地理特征联合预测，图神经网络约束地理一致性 (Ontology-constrained)</p>
+      <div class="tags"><span class="tag tag-cyan">430M params</span><span class="tag tag-cyan">INT8→NPU</span><span class="tag tag-cyan">&lt;500ms</span></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:1.3rem;">
+      <h5 style="color:var(--text);font-size:0.85rem;margin-bottom:0.5rem;">知识蒸馏 · Fusion Engine v2.2</h5>
+      <p style="font-size:0.78rem;color:var(--text2);line-height:1.55;">
+        Qwen3-VL-8B-Instruct (4-bit) 教师模型，3-seed 集成投票生成地理标注。GeoKB 知识库 + 传感器权重自适应 + 网格搜索 Top-N 输出最终坐标。
+      </p>
+      <div class="tags" style="margin-top:0.6rem;"><span class="tag tag-cyan">Teacher-Student</span><span class="tag tag-cyan">3-seed Ensemble</span><span class="tag tag-cyan">GeoKB</span></div>
+    </div>
+  </div>
+
+  <!-- Relation to main system -->
+  <div style="text-align:center;margin-top:2.5rem;padding:1.5rem;background:rgba(0,200,200,0.02);border:1px solid rgba(0,200,200,0.08);border-radius:12px;">
+    <div style="font-size:0.7rem;color:var(--text3);letter-spacing:0.08em;margin-bottom:0.5rem;">同一场景 · 两条互补路径</div>
+    <p style="font-size:0.82rem;color:var(--text2);max-width:560px;margin:0 auto;">
+      传感器定位解决<strong style="color:var(--cyan);">"已知路径上的精确定位"</strong>——可靠、实用、可部署；视觉推理探索<strong style="color:#ffa03c;">"陌生区域的零先验推理"</strong>——前瞻、创新、无需基础设施。二者融合：视觉先锁定范围，传感器再精确匹配，覆盖从完全未知到亚米级的完整链路。
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ================================================ -->
+<!--  SCREEN 4 — PROJECT · 项目介绍 + 粒子动效           -->
+<!-- ================================================ -->
+<section class="screen" id="project">
+<div class="screen-inner">
+  <div class="project-content">
+    <div style="position:relative;display:inline-block;margin-bottom:2rem;">
+      <canvas id="tuxunCanvas" width="400" height="200"></canvas>
+    </div>
+    <div class="title">图寻 · <span>TU XUN</span></div>
+    <p class="desc">
+      面向 DK-2500 嵌入式平台的离线地理定位系统。针对同一户外定位问题，同时推进两条技术路线——传感器轨迹匹配追求可靠落地，视觉语义推理探索学术前沿。从亚米级精确匹配到零先验区域推断，两路互补，覆盖更广的应用边界。
+    </p>
+    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1rem 1.8rem;"><div style="font-size:1.6rem;font-weight:800;color:var(--cyan);">88,000+</div><div style="font-size:0.7rem;color:var(--text3);">行代码</div></div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1rem 1.8rem;"><div style="font-size:1.6rem;font-weight:800;color:var(--cyan);">8</div><div style="font-size:0.7rem;color:var(--text3);">核心模块</div></div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1rem 1.8rem;"><div style="font-size:1.6rem;font-weight:800;color:var(--cyan);">3</div><div style="font-size:0.7rem;color:var(--text3);">编程语言</div></div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1rem 1.8rem;"><div style="font-size:1.6rem;font-weight:800;color:var(--cyan);">DK-2500</div><div style="font-size:0.7rem;color:var(--text3);">目标平台</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer class="footer">
+  图寻 TU XUN · 离线地理定位系统 &nbsp;|&nbsp; Intel Cup Embedded AI Competition &nbsp;|&nbsp; DK-2500 Platform
+</footer>
+
+<script>
+// ===== Background stars =====
+(function(){
+  const c=document.getElementById('bgCanvas'),ctx=c.getContext('2d');
+  let w,h; function R(){w=c.width=innerWidth;h=c.height=innerHeight;} R();addEventListener('resize',R);
+  const stars=Array.from({length:120},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.1+.2,a:Math.random()*.5+.15,s:Math.random()*.004+.001}));
+  function D(){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(s=>{s.a+=s.s;if(s.a>.65||s.a<.15)s.s*=-1;s.y-=.15;if(s.y<0){s.y=h;s.x=Math.random()*w;}
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,255,255,${s.a})`;ctx.fill();});
+    requestAnimationFrame(D);
+  } D();
+})();
+
+// ===== Trajectory canvas =====
+(function(){
+  const cv=document.getElementById('trajCanvas');if(!cv)return;
+  const ctx=cv.getContext('2d'),dpr=devicePixelRatio||1;
+  let path=[],gpsPts=[],at=0;
+  function rebuild(){
+    const W=cv.width/dpr,H=280,CX=W/2,CY=H/2;
+    path=[]; for(let t=0;t<Math.PI*2.4;t+=.035){let r=110+35*Math.sin(t*2.1)+22*Math.cos(t*1.5);path.push({x:CX+r*Math.cos(t),y:CY+r*Math.sin(t*.78)});}
+    gpsPts=path.filter((_,i)=>i%13===0).map(p=>({x:p.x+(Math.random()-.5)*15,y:p.y+(Math.random()-.5)*15}));
+  }
+  function R(){
+    const r=cv.parentElement.getBoundingClientRect();
+    cv.width=r.width*dpr;cv.height=280*dpr;cv.style.width=r.width+'px';cv.style.height='280px';
+    ctx.setTransform(1,0,0,1,0,0);ctx.scale(dpr,dpr);rebuild();
+  }
+  R();addEventListener('resize',R);
+  function D(){
+    const W=cv.width/dpr,H=280;ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,255,255,0.04)';ctx.lineWidth=.6;for(let x=0;x<W;x+=35){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=35){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    gpsPts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,2.8,0,Math.PI*2);ctx.fillStyle='rgba(255,140,0,0.6)';ctx.fill();ctx.strokeStyle='rgba(255,140,0,0.2)';ctx.stroke();});
+    ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);for(let i=1;i<path.length;i++)ctx.lineTo(path[i].x,path[i].y);
+    ctx.strokeStyle='rgba(91,141,239,0.35)';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
+    const sl=Math.floor(path.length*.2),st=Math.floor((at%1)*path.length),ed=Math.min(st+sl,path.length-1);
+    ctx.beginPath();ctx.moveTo(path[st].x,path[st].y);for(let i=st;i<=ed;i++)ctx.lineTo(path[i].x,path[i].y);
+    ctx.strokeStyle='rgba(0,255,255,0.8)';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(path[st].x,path[st].y);for(let i=st;i<=ed;i++)ctx.lineTo(path[i].x,path[i].y);
+    ctx.strokeStyle='rgba(0,255,255,0.18)';ctx.lineWidth=9;ctx.stroke();
+    let di=Math.floor(st+sl*(at%1)),dot=path[Math.min(di,path.length-1)],pulse=1+.3*Math.sin(at*6);
+    ctx.beginPath();ctx.arc(dot.x,dot.y,5,0,Math.PI*2);ctx.fillStyle='rgba(0,255,240,0.85)';ctx.fill();
+    ctx.beginPath();ctx.arc(dot.x,dot.y,11*pulse,0,Math.PI*2);ctx.fillStyle=`rgba(0,255,255,${.13*pulse})`;ctx.fill();
+    at+=.003;requestAnimationFrame(D);
+  } D();
+})();
+
+// ===== GeoCoT stepper =====
+(function(){
+  const steps=document.querySelectorAll('.cot-step'),prev=document.getElementById('cotPrev'),next=document.getElementById('cotNext'),auto=document.getElementById('cotAuto');
+  let cur=0,iv=null;
+  function show(i){steps.forEach((s,x)=>s.classList.toggle('active',x===i));cur=i;prev.disabled=i===0;next.disabled=i===steps.length-1;}
+  prev.addEventListener('click',()=>{stop();if(cur>0)show(cur-1);});
+  next.addEventListener('click',()=>{stop();if(cur<steps.length-1)show(cur+1);});
+  function stop(){if(iv){clearInterval(iv);iv=null;auto.textContent='▶ AUTO';}}
+  auto.addEventListener('click',()=>{if(iv){stop();return;}auto.textContent='⏸ STOP';show(0);iv=setInterval(()=>{if(cur<steps.length-1)show(cur+1);else stop();},2000);});
+})();
+
+// ===== 图寻 Particle Canvas (Screen 4) =====
+(function(){
+  const c=document.getElementById('tuxunCanvas'),ctx=c.getContext('2d');
+  if(!c)return;
+  const dpr=devicePixelRatio||1;c.width=400*dpr;c.height=200*dpr;c.style.width='400px';c.style.height='200px';ctx.scale(dpr,dpr);
+  const W=400,H=200;
+  // Define "图寻" as dot patterns (rough pixel font)
+  const dots=[];
+  const textCanvas=document.createElement('canvas');textCanvas.width=W;textCanvas.height=H;
+  const tctx=textCanvas.getContext('2d');tctx.fillStyle='#fff';tctx.font='bold 80px "PingFang SC","Microsoft YaHei",sans-serif';
+  tctx.textAlign='center';tctx.textBaseline='middle';tctx.fillText('图寻',W/2,H/2);
+  const imgData=tctx.getImageData(0,0,W,H);
+  for(let y=0;y<H;y+=4)for(let x=0;x<W;x+=4){let i=(y*W+x)*4;if(imgData.data[i+3]>80)dots.push({tx:x,ty:y,x:Math.random()*W,y:Math.random()*H,vx:0,vy:0});}
+  let mouse={x:W/2,y:H/2};
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mouse={x:e.clientX-r.left,y:e.clientY-r.top};});
+  function D(){
+    ctx.clearRect(0,0,W,H);
+    dots.forEach(d=>{
+      let dx=d.tx-d.x,dy=d.ty-d.y,mdx=mouse.x-d.x,mdy=mouse.y-d.y,md=Math.sqrt(mdx*mdx+mdy*mdy);
+      if(md<70){let f=(1-md/70)*3;d.x-=mdx/md*f;d.y-=mdy/md*f;}
+      d.vx+=dx*.03;d.vy+=dy*.03;d.vx*=.88;d.vy*=.88;d.x+=d.vx;d.y+=d.vy;
+      ctx.beginPath();ctx.arc(d.x,d.y,1.4,0,Math.PI*2);ctx.fillStyle='rgba(0,255,255,0.8)';ctx.fill();
+    });
+    requestAnimationFrame(D);
+  } D();
+})();
+
+// ===== Nav highlight + screen dots =====
+(function(){
+  const screens=document.querySelectorAll('.screen'),links=document.querySelectorAll('.nav-links a'),dots=document.querySelectorAll('.screen-dots .dot');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){
+      let id=e.target.getAttribute('id'),idx=Array.from(screens).indexOf(e.target);
+      links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+id));
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }});
+  },{threshold:0.5});
+  screens.forEach(s=>obs.observe(s));
+  dots.forEach(d=>{d.addEventListener('click',()=>{let i=parseInt(d.dataset.screen);screens[i]?.scrollIntoView({behavior:'smooth'});});});
+})();
+
+// ===== Music btn toggle =====
+(function(){
+  const btn=document.getElementById('musicBtn');
+  btn.addEventListener('click',()=>{btn.classList.toggle('playing');btn.textContent=btn.classList.contains('playing')?'♪♪':'♪';});
+})();
+</script>
+</body>
+</html>
