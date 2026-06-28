@@ -1,0 +1,64 @@
+%YAML:1.0
+
+#common parameters
+imu: 1         
+num_of_cam: 1  
+
+imu_topic: "/imu0"
+image0_topic: "/cam0/image_raw"
+output_path: "/home/user/vins_fusion_ws/output"
+
+cam0_calib: "cam0_pinhole.yaml"
+image_width: 1280
+image_height: 720
+   
+
+# Extrinsic parameter between IMU and Camera.
+estimate_extrinsic: 0   # 如果你确信ORB的参数准，设为0；不确定设为1在线优化
+
+# 注意：ORB-SLAM3的 IMU.T_b_c1 就是 VINS 的 body_T_cam0 (IMU系到相机系的变换)
+body_T_cam0: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: d
+   data: [0.01916709, -0.99980408, -0.00494212, 0.03133239,
+         -0.99955275, -0.01904832, -0.02305337, 0.00009802,
+          0.02295471,  0.00538177, -0.99972202, 0.00177312,  
+          0.0, 0.0, 0.0, 1.0]
+
+#Multiple thread support
+multiple_thread: 1
+
+#feature traker paprameters
+max_cnt: 150            
+min_dist: 30            
+freq: 10                
+F_threshold: 1.0        
+show_track: 1           
+flow_back: 1            
+
+#optimization parameters
+max_solver_time: 0.04  
+max_num_iterations: 8   
+keyframe_parallax: 10.0 
+
+# IMU parameters (直接对应转换)
+# ORB NoiseGyro -> VINS gyr_n
+# ORB NoiseAcc  -> VINS acc_n
+# ORB GyroWalk  -> VINS gyr_w
+# ORB AccWalk   -> VINS acc_w
+acc_n: 0.1 #0.0014901967103708527     # 加速度计噪声
+gyr_n: 0.01 #0.0001058387558979836     # 陀螺仪噪声
+acc_w: 0.001 #0.00018649699080550532     # 加速度计随机游走
+gyr_w: 0.0001 #8.79886751221017e-06     # 陀螺仪随机游走
+g_norm: 9.80655           # 重力加速度大小 (根据原文件Gravity.target计算得出)
+
+# unsynchronization parameters
+# 对应 ORB-SLAM3 的 CamToImu.TimeShift_s
+estimate_td: 1                    # 建议开启在线时间偏置估计
+td: 0.0018099686518123978                   # 初始时间偏移
+
+# loop closure parameters
+load_previous_pose_graph: 0        
+pose_graph_save_path: "/home/user/vins_fusion_ws/output/pose_graph/" 
+save_image: 1

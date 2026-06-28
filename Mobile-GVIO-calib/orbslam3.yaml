@@ -1,0 +1,103 @@
+%YAML:1.0
+
+loopClosing: false  # true为开启，false为关闭
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+# Source: cam_imu-report-imucam.pdf  :contentReference[oaicite:1]{index=1}
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+# System.LoadAtlasFromFile: "Session_MH01_MH02_MH03_Stereo60_Pseudo"
+# System.SaveAtlasToFile: "Session_MH01_MH02_MH03_Stereo60_Pseudo"
+
+Camera.type: "PinHole"
+
+# Camera calibration and distortion parameters (OpenCV) 
+Camera1.fx: 996.4948765107108
+Camera1.fy: 995.8706613911386
+Camera1.cx: 651.7912725410048
+Camera1.cy: 364.86680915422824
+
+Camera1.k1: 0.06513753258976974
+Camera1.k2: -0.23698184370758457
+Camera1.p1: 0.0007685090700979932
+Camera1.p2: 0.005825777305547826
+
+# Camera resolution (inferred from principal point)
+Camera.width: 1280
+Camera.height: 720
+
+Camera.newWidth: 600
+Camera.newHeight: 350
+
+# Camera frames per second 
+Camera.fps: 30
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 1
+
+# Transformation from camera to body-frame (imu)
+# IMU.T_b_c1  —  (camera -> imu / body)  (filled from report's T_ic: cam0 -> imu0). :contentReference[oaicite:2]{index=2}
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [0.01916709, -0.99980408, -0.00494212, 0.03133239,
+         -0.99955275, -0.01904832, -0.02305337, 0.00009802,
+          0.02295471,  0.00538177, -0.99972202, 0.00177312,
+          0.0, 0.0, 0.0, 1.0]
+
+# IMU noise (from report IMU0 section). :contentReference[oaicite:3]{index=3} all devided by 10
+IMU.NoiseGyro: 0.001 #0.0001058387558979836
+IMU.NoiseAcc: 0.01 #0.0014901967103708527
+IMU.GyroWalk: 0.00001 #8.79886751221017e-06
+IMU.AccWalk: 0.0001 #0.00018649699080550532
+IMU.Frequency: 100.1
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters (kept same as your example; adjust if needed)
+#--------------------------------------------------------------------------------------------
+
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 4000 # 1000
+
+# ORB Extractor: Scale factor between levels in the scale pyramid 	
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid	
+ORBextractor.nLevels: 8
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast			
+ORBextractor.iniThFAST: 10
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5 # -1.8
+Viewer.ViewpointF: 500.0
+
+#--------------------------------------------------------------------------------------------
+# Additional calibration info (from report)
+#--------------------------------------------------------------------------------------------
+# Normalized residuals (reprojection / gyro / accel)
+Calibration.NormalizedResiduals:
+  reprojection_cam0_mean: 0.901056557395154
+  gyroscope_imu0_mean: 0.9643002877577025
+  accelerometer_imu0_mean: 1.1610658406403374
+
+# Time offset (t_imu = t_cam + shift)
+CamToImu.TimeShift_s: 0.0018099686518123978
+
+# Gravity target (m/s^2)
+Gravity.target: [-9.80327437, -0.00211705, 0.25343646]
