@@ -4,6 +4,9 @@
   <arg name="serial_port" default="/dev/ttyUSB0" />
   <arg name="serial_baud" default="115200" />
   <arg name="start_serial_altitude" default="true" />
+  <arg name="start_bme280" default="false" />
+  <arg name="bme280_port" default="/dev/ttyUSB1" />
+  <arg name="sea_level_hpa" default="1013.25" />
 
   <!-- 真实设备时，VINS-Fusion 需要你单独启动；本 launch 只负责路线匹配。 -->
   <node if="$(arg start_serial_altitude)" pkg="hiking_route_localization" type="serial_altitude_node.py" name="serial_altitude_node" output="screen">
@@ -12,12 +15,20 @@
     <param name="simulate" value="false" />
   </node>
 
+  <!-- 方案B：BME280 温湿度气压传感器 -->
+  <node if="$(arg start_bme280)" pkg="hiking_route_localization" type="bme280_altitude_node.py" name="bme280_altitude_node" output="screen">
+    <param name="port" value="$(arg bme280_port)" />
+    <param name="baud" value="$(arg serial_baud)" />
+    <param name="sea_level_hpa" value="$(arg sea_level_hpa)" />
+    <param name="simulate" value="false" />
+  </node>
+
   <node pkg="hiking_route_localization" type="route_matcher_node.py" name="route_matcher" output="screen">
     <param name="route_csv" value="$(arg route_csv)" />
     <param name="num_particles" value="1500" />
-    <param name="uniform_init_without_gps" value="false" />
+    <param name="uniform_init_without_gps" value="true" />
     <param name="initial_s" value="0.0" />
-    <param name="initial_std_m" value="50.0" />
+    <param name="initial_std_m" value="80.0" />
 
     <!-- 根据传感器质量调参 -->
     <param name="sigma_gps" value="12.0" />

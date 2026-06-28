@@ -71,6 +71,8 @@ class ParticleFilterRouteMatcher:
         self.particles: List[float] = []
         self.weights: List[float] = []
         self.initialized = False
+        self.gps_anchored = False  # True after GPS has been used to anchor particles on the route
+        self.baro_calibrated = False  # True after barometer offset has been calibrated using GPS-anchored position
         self.last_odom_pos: Optional[Tuple[float, float, float]] = None
         self.last_odom_stamp: Optional[float] = None
         self.latest_gps: Optional[Tuple[float, float, float, float]] = None  # x,y,sigma,stamp
@@ -117,12 +119,26 @@ class ParticleFilterRouteMatcher:
         stamp = msg.header.stamp.to_sec() if msg.header.stamp else rospy.Time.now().to_sec()
         self.latest_gps = (x, y, sigma, stamp)
 
-        # If this is early and GPS is reliable, initialize around the nearest route point.
-        if self.last_s_est is None or (not self.initialized):
+        # Re-initialize particles if GPS has never anchored, or if current estimate
+        # is very far from the GPS fix (indicating the filter is lost, e.g. mid-segment start).
+        needs_reinit = False
+        if not self.gps_anchored:
+            needs_reinit = True
+        elif self.last_s_est is not None:
+            s_nearest, d2_nearest = self.route.nearest_by_xy(x, y, s_hint=self.last_s_est, radius_m=200.0)
+            dist_to_estimate = abs(self.last_s_est - s_nearest)
+            if dist_to_estimate > 80.0:
+                needs_reinit = True
+                rospy.logwarn("GPS %.1f m from current estimate s=%.1f, re-initializing",
+                              dist_to_estimate, self.last_s_est)
+
+        if needs_reinit:
             s0, d2 = self.route.nearest_by_xy(x, y)
             self.init_particles(s0, max(sigma * 2.0, 10.0), uniform=False)
             self.last_s_est = s0
-            rospy.loginfo("route_matcher initialized by GPS: s=%.1f m, gps_dist=%.1f m", s0, math.sqrt(d2))
+            self.gps_anchored = True
+            rospy.loginfo("route_matcher anchored by GPS: s=%.1f m, gps_dist=%.1f m",
+                          s0, math.sqrt(d2))
         # Publish state even without VINS odometry — GPS-only fallback.
         self.publish_state(msg.header.stamp if msg.header.stamp else rospy.Time.now())
 
@@ -140,10 +156,12 @@ class ParticleFilterRouteMatcher:
         if self.latest_baro_raw is None:
             return None
         z_raw, _ = self.latest_baro_raw
-        if self.baro_offset is None and self.auto_baro_offset and self.last_s_est is not None:
+        if self.baro_offset is None and self.auto_baro_offset and self.gps_anchored:
             rp = self.route.interpolate(self.last_s_est)
             self.baro_offset = rp.z - z_raw
-            rospy.loginfo("baro offset calibrated: %.3f m", self.baro_offset)
+            self.baro_calibrated = True
+            rospy.loginfo("baro offset calibrated: %.3f m (GPS-anchored at s=%.1f m, route_z=%.1f m)",
+                          self.baro_offset, self.last_s_est, rp.z)
         if self.baro_offset is None:
             return z_raw
         return z_raw + self.baro_offset
