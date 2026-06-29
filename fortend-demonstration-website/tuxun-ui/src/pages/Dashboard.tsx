@@ -9,7 +9,7 @@ import { MapPin, Crosshair, Satellite, ShieldCheck, Navigation, Gauge, Mountain,
 interface RoutePt { x: number; y: number; z: number; s: number; lon: number; lat: number }
 
 export default function Dashboard() {
-  const { connected, state, gpsFixes, pathHistory, gpsToLocal } = useRosBridge()
+  const { connected, state, gpsFixes, pathHistory, alignedVioPath, gpsToLocal } = useRosBridge()
   const [routePts, setRoutePts] = useState<RoutePt[]>([])
 
   useEffect(() => {
@@ -91,10 +91,11 @@ export default function Dashboard() {
             </span>
           </div>
           <div className="flex-1 relative min-h-[360px]">
-            <TrajectoryMap routePoints={routePts} pathHistory={pathHistory} gpsFixes={gpsFixes} gpsToLocal={gpsToLocal as any} />
+            <TrajectoryMap routePoints={routePts} pathHistory={pathHistory} gpsFixes={gpsFixes} gpsToLocal={gpsToLocal as any} alignedVioPath={alignedVioPath} />
           </div>
           <div className="px-5 py-2 border-t border-[#E2E8F0] flex gap-6 text-xs text-[#64748B]">
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 bg-[#CBD5E1] inline-block" /> Route</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 bg-[#22C55E] inline-block" /> VIO</span>
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-0.5 bg-[#2563EB] inline-block" /> Matched</span>
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] inline-block" /> GPS</span>
           </div>

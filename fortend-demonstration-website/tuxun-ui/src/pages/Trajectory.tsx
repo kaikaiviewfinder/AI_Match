@@ -3,7 +3,7 @@ import { useRosBridge } from '../hooks/useRosBridge'
 import TrajectoryMap from '../components/TrajectoryMap'
 
 export default function TrajectoryPage() {
-  const { connected, state, gpsFixes, pathHistory, gpsToLocal } = useRosBridge()
+  const { connected, state, gpsFixes, pathHistory, alignedVioPath, gpsToLocal } = useRosBridge()
   const [routePts, setRoutePts] = useState<any[]>([])
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function TrajectoryPage() {
     <div className="space-y-5 max-w-[1600px] mx-auto h-full flex flex-col">
       <div className="grid grid-cols-3 gap-4 text-sm">
         {[
-          ['VIO Raw', '#3B82F6', '--'],
+          ['VIO Raw', '#22C55E', `${alignedVioPath?.length || 0} pts`],
           ['Matched', '#2563EB', s ? `${(s.s_std_m).toFixed(1)}m error` : '--'],
           ['GPS Track', '#F59E0B', `${gpsFixes.length} fixes`],
         ].map(([label, color, detail]) => (
@@ -33,7 +33,7 @@ export default function TrajectoryPage() {
         ))}
       </div>
       <div className="flex-1 bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden min-h-[500px]">
-        <TrajectoryMap routePoints={routePts} pathHistory={pathHistory} gpsFixes={gpsFixes} gpsToLocal={gpsToLocal as any} />
+        <TrajectoryMap routePoints={routePts} pathHistory={pathHistory} gpsFixes={gpsFixes} gpsToLocal={gpsToLocal as any} alignedVioPath={alignedVioPath} />
       </div>
       <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 flex items-center gap-6">
         <span className="text-sm font-semibold text-[#0F172A]">Statistics</span>
