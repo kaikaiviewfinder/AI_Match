@@ -1,0 +1,48 @@
+宏观: {macro_output}
+区域: {regional_output}
+
+综合所有视觉线索，填入下方 JSON 字段。每个字段必须从给定的英文值中选择。
+
+字段定义：
+
+scene_type: 具体场景类型
+  选项: city_street | mountain_trail_karst | mountain_trail_granite | mountain_trail_sandstone | mountain_trail_snow | rural_village | tourist_scenic | wilderness_forest | desert | grassland | coastal | river_valley
+
+landform_detail: 更细致的地貌
+  选项: limestone_tower_karst_scattered | limestone_tower_karst_dense | granite_spheroidal_rounded | granite_spheroidal_sharp | quartz_sandstone_pillars | red_sandstone_danxia | snow_peaks_glaciers | alpine_meadow | plateau_plain | river_canyon | coastal_shore | urban_flat | null
+
+rock_color: 岩石颜色 (如可见)
+  选项: grey_white | red_brown | yellow_brown | dark_grey | black | white | mixed | null
+
+soil_color: 土壤颜色 (如可见)
+  选项: red | yellow | brown | black | grey | white | loess_yellow | null
+
+water_visible: 能看到水吗?
+  true 或 false
+
+water_type: 水体类型 (water_visible=false 则填 null)
+  选项: river | lake | ocean | stream | waterfall | glacier | null
+
+distinctive_features: 独特的一眼特征
+  如: 金字塔形山峰、标志性建筑(布达拉宫/东方明珠)、缆车索道、百龙天梯等
+  没有就空数组 []
+
+confidence: 把握程度
+  选项: high | medium | low
+
+province: 最可能的省份英文名
+
+输出 JSON(只输出JSON，不要其他内容):
+```json
+{{
+  "scene_type": "...",
+  "landform_detail": "...",
+  "rock_color": "...",
+  "soil_color": "...",
+  "water_visible": true/false,
+  "water_type": "...",
+  "distinctive_features": [...],
+  "confidence": "...",
+  "province": "..."
+}}
+```

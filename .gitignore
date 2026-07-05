@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.claude/
+*.egg-info/
+.DS_Store
+Thumbs.db
+output/bench_*_snapshot.json
+output/bench_*_checkpoint.pkl

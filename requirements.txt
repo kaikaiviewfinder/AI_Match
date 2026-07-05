@@ -1,0 +1,49 @@
+# Core ML/DL
+accelerate==1.1.1
+bitsandbytes==0.44.1
+faiss-cpu==1.10.0
+peft>=0.13.0
+safetensors==0.4.5
+sentence-transformers==3.4.1
+torch==2.6.0
+torchaudio==2.6.0
+torchvision==0.21.0
+transformers==4.49.0
+
+# OpenVINO + quantization (for DK-2500 deployment)
+nncf>=2.9.0
+onnx>=1.16.0
+onnxruntime>=1.18.0
+openvino>=2024.0
+
+# Data & evaluation
+datasets>=2.21.0
+geopandas==1.0.1
+geopy==2.4.1
+numpy==1.26.4
+opencv-contrib-python==4.10.0.84
+pandas==2.2.3
+pillow==10.4.0
+pyproj==3.6.1
+scikit-learn==1.5.0
+scipy==1.13.1
+shapely==2.0.6
+
+# Visualization
+basemap==1.4.1
+folium==0.19.2
+matplotlib==3.8.4
+plotly==5.24.1
+seaborn==0.13.2
+
+# API & web (evaluation scripts only)
+openai>=1.0
+Flask==3.1.0
+
+# Utilities
+huggingface-hub==0.26.2
+python-dotenv>=1.0.0
+PyYAML==6.0.1
+tqdm
+requests
+rich==13.7.1

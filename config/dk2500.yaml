@@ -1,0 +1,27 @@
+# DK-2500 hardware-specific overrides
+
+model:
+  device: auto
+  max_image_size: [840, 840]
+  max_output_tokens: 2048
+
+quantization:
+  enabled: true
+  vision_encoder: int8
+  language_model: int4
+  kv_cache: fp16
+
+openvino:
+  enabled: true
+  device_vit: GPU
+  device_llm_prefill: GPU
+  device_llm_generate: NPU
+  fallback_device: GPU
+
+memory:
+  max_model_memory_gb: 8
+  max_total_memory_gb: 12
+
+inference:
+  temperature: 0.7
+  top_p: 0.9

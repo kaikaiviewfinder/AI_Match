@@ -1,0 +1,7459 @@
+{
+  "_description": "Chinese Geographic Ontology V2 for visual geolocation. 63 sub-regions with field fingerprints, spatial constraints, sensor profiles, and adjacencies.",
+  "_version": "2.0",
+  "_field_hierarchy": {
+    "level_0_sensor": [
+      "elevation_m",
+      "temperature_c",
+      "humidity_pct"
+    ],
+    "level_1_macro": [
+      "climate_zone"
+    ],
+    "level_2_regional": [
+      "terrain_type",
+      "vegetation_zone",
+      "soil_color"
+    ],
+    "level_3_sub_regional": [
+      "landform_detail",
+      "mountain_rock_type",
+      "water_type"
+    ],
+    "level_4_cultural": [
+      "urbanization",
+      "architecture_style",
+      "language_script",
+      "pavement_type"
+    ],
+    "level_5_local": [
+      "tree_species",
+      "building_height",
+      "sky_quality",
+      "scene_type"
+    ]
+  },
+  "_anchor_fields": {
+    "description": "Fields that, when predicted with high confidence, strongly constrain region. Ordered by geographic distinctiveness.",
+    "fields": [
+      "language_script",
+      "architecture_style",
+      "mountain_rock_type",
+      "soil_color",
+      "climate_zone",
+      "tree_species",
+      "landform_detail",
+      "terrain_type"
+    ]
+  },
+  "constraints": {
+    "impossible_combinations": [
+      {
+        "fields": {
+          "climate_zone": "alpine",
+          "tree_species": "coconut_palm"
+        },
+        "reason": "Coconut palms require tropical climate"
+      },
+      {
+        "fields": {
+          "climate_zone": "alpine",
+          "vegetation_zone": "tropical_rainforest"
+        },
+        "reason": "Tropical rainforest cannot exist in alpine climate"
+      },
+      {
+        "fields": {
+          "climate_zone": "tropical",
+          "mountain_rock_type": "snow_peaks_glaciers"
+        },
+        "reason": "Glaciers require cold climate"
+      },
+      {
+        "fields": {
+          "climate_zone": "arid",
+          "vegetation_zone": "tropical_rainforest"
+        },
+        "reason": "Rainforest requires high precipitation"
+      },
+      {
+        "fields": {
+          "climate_zone": "boreal",
+          "tree_species": "coconut_palm"
+        },
+        "reason": "Coconut palms cannot survive boreal winters"
+      },
+      {
+        "fields": {
+          "terrain_type": "desert_dunes",
+          "water_type": "waterfall"
+        },
+        "reason": "Waterfalls cannot exist in sand dunes"
+      },
+      {
+        "fields": {
+          "terrain_type": "desert_dunes",
+          "vegetation_zone": "bamboo_forest"
+        },
+        "reason": "Bamboo requires moisture"
+      },
+      {
+        "fields": {
+          "urbanization": "metropolis",
+          "scene_type": "wilderness_forest"
+        },
+        "reason": "Metropolis and wilderness are contradictory"
+      },
+      {
+        "fields": {
+          "architecture_style": "tibetan_stone",
+          "language_script": "uyghur_arabic"
+        },
+        "reason": "Tibetan architecture occurs in Tibetan language regions, not Uyghur"
+      },
+      {
+        "fields": {
+          "architecture_style": "tulou",
+          "climate_zone": "arid"
+        },
+        "reason": "Tulou are in humid subtropical Fujian"
+      },
+      {
+        "fields": {
+          "soil_color": "loess_yellow",
+          "vegetation_zone": "tropical_rainforest"
+        },
+        "reason": "Loess is arid/semi-arid, not rainforest"
+      },
+      {
+        "fields": {
+          "tree_species": "banyan",
+          "climate_zone": "boreal"
+        },
+        "reason": "Banyan trees require warm climate"
+      },
+      {
+        "fields": {
+          "tree_species": "chinese_red_pine",
+          "climate_zone": "tropical"
+        },
+        "reason": "Red pine is temperate/boreal species"
+      }
+    ],
+    "sensor_constraints": {
+      "elevation_to_climate": {
+        ">4000m": [
+          "alpine"
+        ],
+        "2500-4000m": [
+          "alpine",
+          "boreal",
+          "arid"
+        ],
+        "1000-2500m": [
+          "temperate",
+          "arid",
+          "subtropical",
+          "boreal"
+        ],
+        "200-1000m": [
+          "temperate",
+          "subtropical",
+          "arid",
+          "tropical"
+        ],
+        "<200m": [
+          "temperate",
+          "subtropical",
+          "tropical",
+          "arid"
+        ]
+      },
+      "temperature_to_climate": {
+        "<0°C": [
+          "alpine",
+          "boreal"
+        ],
+        "0-10°C": [
+          "boreal",
+          "temperate",
+          "alpine"
+        ],
+        "10-20°C": [
+          "temperate",
+          "subtropical",
+          "arid"
+        ],
+        "20-30°C": [
+          "subtropical",
+          "tropical",
+          "arid"
+        ],
+        ">30°C": [
+          "tropical",
+          "arid"
+        ]
+      }
+    }
+  },
+  "adjacency": {
+    "r01": [
+      "r04",
+      "r05"
+    ],
+    "r02": [],
+    "r03": [],
+    "r04": [
+      "r01",
+      "r59"
+    ],
+    "r05": [
+      "r01"
+    ],
+    "r06": [
+      "r09"
+    ],
+    "r07": [
+      "r08"
+    ],
+    "r08": [
+      "r07",
+      "r09",
+      "r11",
+      "r18",
+      "r25"
+    ],
+    "r09": [
+      "r06",
+      "r08",
+      "r10",
+      "r11"
+    ],
+    "r10": [
+      "r09",
+      "r11",
+      "r13",
+      "r15",
+      "r61",
+      "r62"
+    ],
+    "r11": [
+      "r08",
+      "r09",
+      "r10"
+    ],
+    "r12": [
+      "r13",
+      "r14"
+    ],
+    "r13": [
+      "r10",
+      "r12"
+    ],
+    "r14": [
+      "r12",
+      "r15",
+      "r49",
+      "r63"
+    ],
+    "r15": [
+      "r10",
+      "r14",
+      "r61"
+    ],
+    "r16": [
+      "r17",
+      "r18"
+    ],
+    "r17": [
+      "r16",
+      "r18",
+      "r19",
+      "r38"
+    ],
+    "r18": [
+      "r08",
+      "r16",
+      "r17",
+      "r19"
+    ],
+    "r19": [
+      "r17",
+      "r18",
+      "r20"
+    ],
+    "r20": [
+      "r19",
+      "r36"
+    ],
+    "r21": [
+      "r22",
+      "r25"
+    ],
+    "r22": [
+      "r21",
+      "r23",
+      "r24"
+    ],
+    "r23": [
+      "r22",
+      "r33"
+    ],
+    "r24": [
+      "r22",
+      "r25"
+    ],
+    "r25": [
+      "r08",
+      "r21",
+      "r24"
+    ],
+    "r26": [
+      "r27",
+      "r29",
+      "r51"
+    ],
+    "r27": [
+      "r26",
+      "r28",
+      "r29"
+    ],
+    "r28": [
+      "r27",
+      "r29"
+    ],
+    "r29": [
+      "r26",
+      "r27",
+      "r28"
+    ],
+    "r30": [],
+    "r31": [
+      "r37"
+    ],
+    "r32": [
+      "r34",
+      "r35"
+    ],
+    "r33": [
+      "r23",
+      "r43"
+    ],
+    "r34": [
+      "r32",
+      "r35"
+    ],
+    "r35": [
+      "r32",
+      "r34"
+    ],
+    "r36": [
+      "r20",
+      "r37",
+      "r38"
+    ],
+    "r37": [
+      "r31",
+      "r36"
+    ],
+    "r38": [
+      "r17",
+      "r36"
+    ],
+    "r39": [
+      "r40"
+    ],
+    "r40": [
+      "r39"
+    ],
+    "r41": [],
+    "r42": [
+      "r43"
+    ],
+    "r43": [
+      "r33",
+      "r42"
+    ],
+    "r44": [
+      "r45"
+    ],
+    "r45": [
+      "r44"
+    ],
+    "r46": [],
+    "r47": [
+      "r48",
+      "r49",
+      "r63"
+    ],
+    "r48": [
+      "r47",
+      "r49",
+      "r50"
+    ],
+    "r49": [
+      "r14",
+      "r47",
+      "r48",
+      "r63"
+    ],
+    "r50": [
+      "r48",
+      "r51"
+    ],
+    "r51": [
+      "r26",
+      "r50"
+    ],
+    "r52": [
+      "r53",
+      "r54",
+      "r55",
+      "r57"
+    ],
+    "r53": [
+      "r52",
+      "r54",
+      "r55"
+    ],
+    "r54": [
+      "r52",
+      "r53",
+      "r55",
+      "r57"
+    ],
+    "r55": [
+      "r52",
+      "r53",
+      "r54"
+    ],
+    "r56": [],
+    "r57": [
+      "r52",
+      "r54",
+      "r58"
+    ],
+    "r58": [
+      "r57"
+    ],
+    "r59": [
+      "r04"
+    ],
+    "r60": [],
+    "r61": [
+      "r10",
+      "r15",
+      "r62"
+    ],
+    "r62": [
+      "r10",
+      "r61"
+    ],
+    "r63": [
+      "r14",
+      "r47",
+      "r49"
+    ]
+  },
+  "regions": [
+    {
+      "id": "r01",
+      "name": "松嫩平原",
+      "center_lat": 46.5,
+      "center_lng": 127.0,
+      "radius_km": 150,
+      "elevation_range": [
+        50,
+        500
+      ],
+      "temp_range": [
+        -22,
+        5
+      ],
+      "humid_range": [
+        50,
+        80
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r02",
+      "name": "三江平原",
+      "center_lat": 47.5,
+      "center_lng": 133.0,
+      "radius_km": 130,
+      "elevation_range": [
+        30,
+        200
+      ],
+      "temp_range": [
+        -20,
+        4
+      ],
+      "humid_range": [
+        60,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r03",
+      "name": "辽河平原",
+      "center_lat": 42.0,
+      "center_lng": 123.0,
+      "radius_km": 120,
+      "elevation_range": [
+        0,
+        300
+      ],
+      "temp_range": [
+        -15,
+        8
+      ],
+      "humid_range": [
+        45,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r04",
+      "name": "大兴安岭",
+      "center_lat": 49.0,
+      "center_lng": 122.0,
+      "radius_km": 220,
+      "elevation_range": [
+        500,
+        2000
+      ],
+      "temp_range": [
+        -22,
+        2
+      ],
+      "humid_range": [
+        45,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r05",
+      "name": "长白山区",
+      "center_lat": 42.5,
+      "center_lng": 128.5,
+      "radius_km": 180,
+      "elevation_range": [
+        500,
+        2700
+      ],
+      "temp_range": [
+        -18,
+        5
+      ],
+      "humid_range": [
+        60,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r06",
+      "name": "京津冀城市群",
+      "center_lat": 39.5,
+      "center_lng": 116.5,
+      "radius_km": 120,
+      "elevation_range": [
+        0,
+        200
+      ],
+      "temp_range": [
+        -5,
+        15
+      ],
+      "humid_range": [
+        35,
+        65
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r07",
+      "name": "山东半岛",
+      "center_lat": 36.5,
+      "center_lng": 119.5,
+      "radius_km": 140,
+      "elevation_range": [
+        0,
+        300
+      ],
+      "temp_range": [
+        -3,
+        14
+      ],
+      "humid_range": [
+        50,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r08",
+      "name": "黄淮平原",
+      "center_lat": 34.5,
+      "center_lng": 115.5,
+      "radius_km": 170,
+      "elevation_range": [
+        0,
+        150
+      ],
+      "temp_range": [
+        0,
+        16
+      ],
+      "humid_range": [
+        50,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r09",
+      "name": "太行山区",
+      "center_lat": 37.5,
+      "center_lng": 113.5,
+      "radius_km": 130,
+      "elevation_range": [
+        500,
+        2000
+      ],
+      "temp_range": [
+        -5,
+        12
+      ],
+      "humid_range": [
+        40,
+        65
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r10",
+      "name": "陕北高原",
+      "center_lat": 37.5,
+      "center_lng": 109.5,
+      "radius_km": 140,
+      "elevation_range": [
+        800,
+        1800
+      ],
+      "temp_range": [
+        -3,
+        14
+      ],
+      "humid_range": [
+        30,
+        60
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r11",
+      "name": "山西高原",
+      "center_lat": 37.0,
+      "center_lng": 112.0,
+      "radius_km": 130,
+      "elevation_range": [
+        600,
+        1800
+      ],
+      "temp_range": [
+        -3,
+        13
+      ],
+      "humid_range": [
+        35,
+        60
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r12",
+      "name": "秦岭山脉",
+      "center_lat": 34.0,
+      "center_lng": 107.5,
+      "radius_km": 130,
+      "elevation_range": [
+        800,
+        2500
+      ],
+      "temp_range": [
+        0,
+        14
+      ],
+      "humid_range": [
+        45,
+        70
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r13",
+      "name": "关中平原",
+      "center_lat": 34.5,
+      "center_lng": 108.0,
+      "radius_km": 100,
+      "elevation_range": [
+        300,
+        1200
+      ],
+      "temp_range": [
+        2,
+        16
+      ],
+      "humid_range": [
+        50,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r14",
+      "name": "陇中高原",
+      "center_lat": 36.5,
+      "center_lng": 104.0,
+      "radius_km": 160,
+      "elevation_range": [
+        1200,
+        2500
+      ],
+      "temp_range": [
+        0,
+        12
+      ],
+      "humid_range": [
+        25,
+        55
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r15",
+      "name": "宁夏平原",
+      "center_lat": 38.5,
+      "center_lng": 106.5,
+      "radius_km": 120,
+      "elevation_range": [
+        1000,
+        2000
+      ],
+      "temp_range": [
+        2,
+        14
+      ],
+      "humid_range": [
+        20,
+        50
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r16",
+      "name": "上海-苏南",
+      "center_lat": 31.2,
+      "center_lng": 121.3,
+      "radius_km": 90,
+      "elevation_range": [
+        0,
+        50
+      ],
+      "temp_range": [
+        5,
+        20
+      ],
+      "humid_range": [
+        65,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r17",
+      "name": "浙北-杭州湾",
+      "center_lat": 30.0,
+      "center_lng": 120.5,
+      "radius_km": 110,
+      "elevation_range": [
+        0,
+        500
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r18",
+      "name": "南京-合肥都市圈",
+      "center_lat": 32.0,
+      "center_lng": 118.5,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        200
+      ],
+      "temp_range": [
+        5,
+        18
+      ],
+      "humid_range": [
+        60,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r19",
+      "name": "皖南-浙西山区",
+      "center_lat": 30.5,
+      "center_lng": 117.5,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        800
+      ],
+      "temp_range": [
+        8,
+        19
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r20",
+      "name": "赣北-鄱阳湖平原",
+      "center_lat": 28.0,
+      "center_lng": 116.5,
+      "radius_km": 130,
+      "elevation_range": [
+        0,
+        800
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r21",
+      "name": "武汉城市圈",
+      "center_lat": 30.5,
+      "center_lng": 114.0,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        200
+      ],
+      "temp_range": [
+        6,
+        19
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r22",
+      "name": "洞庭湖平原",
+      "center_lat": 29.0,
+      "center_lng": 112.0,
+      "radius_km": 120,
+      "elevation_range": [
+        20,
+        500
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r23",
+      "name": "湘西-武陵山区",
+      "center_lat": 27.5,
+      "center_lng": 111.0,
+      "radius_km": 120,
+      "elevation_range": [
+        100,
+        1500
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r24",
+      "name": "鄂西-神农架",
+      "center_lat": 31.5,
+      "center_lng": 110.5,
+      "radius_km": 130,
+      "elevation_range": [
+        300,
+        2000
+      ],
+      "temp_range": [
+        6,
+        18
+      ],
+      "humid_range": [
+        60,
+        80
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r25",
+      "name": "南阳盆地",
+      "center_lat": 32.5,
+      "center_lng": 112.5,
+      "radius_km": 100,
+      "elevation_range": [
+        50,
+        500
+      ],
+      "temp_range": [
+        6,
+        17
+      ],
+      "humid_range": [
+        55,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r26",
+      "name": "成都平原",
+      "center_lat": 30.6,
+      "center_lng": 104.0,
+      "radius_km": 80,
+      "elevation_range": [
+        400,
+        700
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r27",
+      "name": "川东丘陵",
+      "center_lat": 30.0,
+      "center_lng": 106.5,
+      "radius_km": 90,
+      "elevation_range": [
+        200,
+        800
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r28",
+      "name": "重庆都市圈",
+      "center_lat": 29.5,
+      "center_lng": 106.5,
+      "radius_km": 80,
+      "elevation_range": [
+        200,
+        600
+      ],
+      "temp_range": [
+        8,
+        22
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r29",
+      "name": "川南-宜宾",
+      "center_lat": 28.8,
+      "center_lng": 104.5,
+      "radius_km": 100,
+      "elevation_range": [
+        200,
+        1200
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r30",
+      "name": "珠三角",
+      "center_lat": 23.0,
+      "center_lng": 113.5,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        500
+      ],
+      "temp_range": [
+        15,
+        28
+      ],
+      "humid_range": [
+        70,
+        95
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r31",
+      "name": "粤东-潮汕",
+      "center_lat": 23.5,
+      "center_lng": 116.5,
+      "radius_km": 90,
+      "elevation_range": [
+        0,
+        500
+      ],
+      "temp_range": [
+        14,
+        26
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r32",
+      "name": "粤西-雷州",
+      "center_lat": 21.5,
+      "center_lng": 110.5,
+      "radius_km": 120,
+      "elevation_range": [
+        0,
+        400
+      ],
+      "temp_range": [
+        14,
+        27
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "tropical": 0.7,
+          "subtropical": 0.3
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "coastal_shore": 0.25,
+          "sharp_mountains": 0.2,
+          "farmland_plain": 0.2
+        },
+        "vegetation_zone": {
+          "tropical_rainforest": 0.4,
+          "broadleaf_evergreen": 0.3,
+          "bamboo_forest": 0.1,
+          "mixed_forest": 0.1,
+          "cropland": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "rural": 0.15,
+          "wilderness": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.35,
+          "old_residential": 0.25,
+          "modern_glass": 0.2,
+          "arcade": 0.1,
+          "stilt_house": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.15
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "traditional_chinese": 0.1,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "red": 0.5,
+          "yellow": 0.3,
+          "brown": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.35,
+          "grey_hazy": 0.35,
+          "thick_fog": 0.3
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.55,
+          "granite_spheroidal": 0.25,
+          "limestone_karst": 0.2
+        },
+        "tree_species": {
+          "coconut_palm": 0.25,
+          "banyan": 0.3,
+          "camphor": 0.2,
+          "bamboo": 0.15,
+          "none_visible": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.3,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.15
+        },
+        "water_type": {
+          "ocean": 0.3,
+          "river": 0.3,
+          "lake": 0.15,
+          "stream": 0.15,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "coastal_shore": 0.3,
+          "urban_flat": 0.25,
+          "river_canyon": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "coastal": 0.3,
+          "city_street": 0.3,
+          "rural_village": 0.2,
+          "river_valley": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r33",
+      "name": "桂北-桂林",
+      "center_lat": 25.0,
+      "center_lng": 110.5,
+      "radius_km": 120,
+      "elevation_range": [
+        100,
+        1200
+      ],
+      "temp_range": [
+        12,
+        24
+      ],
+      "humid_range": [
+        70,
+        95
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r34",
+      "name": "桂南-南宁",
+      "center_lat": 22.5,
+      "center_lng": 108.5,
+      "radius_km": 100,
+      "elevation_range": [
+        50,
+        800
+      ],
+      "temp_range": [
+        15,
+        27
+      ],
+      "humid_range": [
+        70,
+        95
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r35",
+      "name": "海南岛",
+      "center_lat": 19.5,
+      "center_lng": 109.5,
+      "radius_km": 140,
+      "elevation_range": [
+        0,
+        1500
+      ],
+      "temp_range": [
+        18,
+        30
+      ],
+      "humid_range": [
+        70,
+        95
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "tropical": 0.7,
+          "subtropical": 0.3
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "coastal_shore": 0.25,
+          "sharp_mountains": 0.2,
+          "farmland_plain": 0.2
+        },
+        "vegetation_zone": {
+          "tropical_rainforest": 0.4,
+          "broadleaf_evergreen": 0.3,
+          "bamboo_forest": 0.1,
+          "mixed_forest": 0.1,
+          "cropland": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "rural": 0.15,
+          "wilderness": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.35,
+          "old_residential": 0.25,
+          "modern_glass": 0.2,
+          "arcade": 0.1,
+          "stilt_house": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.15
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "traditional_chinese": 0.1,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "red": 0.5,
+          "yellow": 0.3,
+          "brown": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.35,
+          "grey_hazy": 0.35,
+          "thick_fog": 0.3
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.55,
+          "granite_spheroidal": 0.25,
+          "limestone_karst": 0.2
+        },
+        "tree_species": {
+          "coconut_palm": 0.25,
+          "banyan": 0.3,
+          "camphor": 0.2,
+          "bamboo": 0.15,
+          "none_visible": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.3,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.15
+        },
+        "water_type": {
+          "ocean": 0.3,
+          "river": 0.3,
+          "lake": 0.15,
+          "stream": 0.15,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "coastal_shore": 0.3,
+          "urban_flat": 0.25,
+          "river_canyon": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "coastal": 0.3,
+          "city_street": 0.3,
+          "rural_village": 0.2,
+          "river_valley": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r36",
+      "name": "闽东-福州",
+      "center_lat": 26.5,
+      "center_lng": 119.5,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        1000
+      ],
+      "temp_range": [
+        12,
+        24
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r37",
+      "name": "闽南-厦漳泉",
+      "center_lat": 24.5,
+      "center_lng": 118.0,
+      "radius_km": 100,
+      "elevation_range": [
+        0,
+        800
+      ],
+      "temp_range": [
+        14,
+        26
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r38",
+      "name": "浙南-温州",
+      "center_lat": 28.0,
+      "center_lng": 120.5,
+      "radius_km": 90,
+      "elevation_range": [
+        0,
+        900
+      ],
+      "temp_range": [
+        10,
+        22
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r39",
+      "name": "滇中-昆明",
+      "center_lat": 25.0,
+      "center_lng": 102.5,
+      "radius_km": 90,
+      "elevation_range": [
+        1500,
+        2500
+      ],
+      "temp_range": [
+        6,
+        18
+      ],
+      "humid_range": [
+        50,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r40",
+      "name": "滇西-大理",
+      "center_lat": 25.5,
+      "center_lng": 100.0,
+      "radius_km": 110,
+      "elevation_range": [
+        1200,
+        3000
+      ],
+      "temp_range": [
+        8,
+        20
+      ],
+      "humid_range": [
+        55,
+        80
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r41",
+      "name": "滇南-西双版纳",
+      "center_lat": 21.5,
+      "center_lng": 101.5,
+      "radius_km": 120,
+      "elevation_range": [
+        500,
+        2000
+      ],
+      "temp_range": [
+        16,
+        28
+      ],
+      "humid_range": [
+        70,
+        95
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "tropical": 0.7,
+          "subtropical": 0.3
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "coastal_shore": 0.25,
+          "sharp_mountains": 0.2,
+          "farmland_plain": 0.2
+        },
+        "vegetation_zone": {
+          "tropical_rainforest": 0.4,
+          "broadleaf_evergreen": 0.3,
+          "bamboo_forest": 0.1,
+          "mixed_forest": 0.1,
+          "cropland": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "rural": 0.15,
+          "wilderness": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.35,
+          "old_residential": 0.25,
+          "modern_glass": 0.2,
+          "arcade": 0.1,
+          "stilt_house": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.15
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "traditional_chinese": 0.1,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "red": 0.5,
+          "yellow": 0.3,
+          "brown": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.35,
+          "grey_hazy": 0.35,
+          "thick_fog": 0.3
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.55,
+          "granite_spheroidal": 0.25,
+          "limestone_karst": 0.2
+        },
+        "tree_species": {
+          "coconut_palm": 0.25,
+          "banyan": 0.3,
+          "camphor": 0.2,
+          "bamboo": 0.15,
+          "none_visible": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.3,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.15
+        },
+        "water_type": {
+          "ocean": 0.3,
+          "river": 0.3,
+          "lake": 0.15,
+          "stream": 0.15,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "coastal_shore": 0.3,
+          "urban_flat": 0.25,
+          "river_canyon": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "coastal": 0.3,
+          "city_street": 0.3,
+          "rural_village": 0.2,
+          "river_valley": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r42",
+      "name": "黔中-贵阳",
+      "center_lat": 26.5,
+      "center_lng": 106.5,
+      "radius_km": 80,
+      "elevation_range": [
+        800,
+        1800
+      ],
+      "temp_range": [
+        10,
+        20
+      ],
+      "humid_range": [
+        65,
+        85
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r43",
+      "name": "黔东南-苗岭",
+      "center_lat": 25.5,
+      "center_lng": 108.5,
+      "radius_km": 100,
+      "elevation_range": [
+        200,
+        1200
+      ],
+      "temp_range": [
+        12,
+        24
+      ],
+      "humid_range": [
+        70,
+        90
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "subtropical": 0.9,
+          "tropical": 0.05,
+          "temperate": 0.05
+        },
+        "terrain_type": {
+          "rolling_hills": 0.35,
+          "farmland_plain": 0.25,
+          "sharp_mountains": 0.2,
+          "urban_flat": 0.2
+        },
+        "vegetation_zone": {
+          "broadleaf_evergreen": 0.35,
+          "mixed_forest": 0.25,
+          "cropland": 0.15,
+          "bamboo_forest": 0.15,
+          "conifer_forest": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.25,
+          "metropolis": 0.2,
+          "village": 0.15,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "modern_glass": 0.2,
+          "old_residential": 0.2,
+          "hui_style": 0.1,
+          "traditional_official": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.45,
+          "grey_concrete": 0.3,
+          "red_brick_tiles": 0.15,
+          "natural": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "traditional_chinese": 0.03,
+          "bilingual_cn_en": 0.02
+        },
+        "soil_color": {
+          "red": 0.35,
+          "brown": 0.3,
+          "yellow": 0.25,
+          "grey": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.3,
+          "thick_fog": 0.2
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.65,
+          "granite_spheroidal": 0.15,
+          "limestone_karst": 0.1,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "camphor": 0.3,
+          "bamboo": 0.2,
+          "plane_tree": 0.2,
+          "banyan": 0.15,
+          "none_visible": 0.15
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "high_rise": 0.25,
+          "low_rise": 0.3,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "lake": 0.25,
+          "stream": 0.15,
+          "ocean": 0.1,
+          "none_visible": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.3,
+          "river_canyon": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.25,
+          "river_valley": 0.2,
+          "tourist_scenic": 0.1,
+          "wilderness_forest": 0.1
+        }
+      }
+    },
+    {
+      "id": "r44",
+      "name": "藏南-拉萨河谷",
+      "center_lat": 29.5,
+      "center_lng": 91.5,
+      "radius_km": 130,
+      "elevation_range": [
+        3500,
+        5000
+      ],
+      "temp_range": [
+        -5,
+        10
+      ],
+      "humid_range": [
+        15,
+        45
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r45",
+      "name": "藏北-羌塘高原",
+      "center_lat": 32.0,
+      "center_lng": 88.0,
+      "radius_km": 200,
+      "elevation_range": [
+        4200,
+        5500
+      ],
+      "temp_range": [
+        -12,
+        5
+      ],
+      "humid_range": [
+        10,
+        35
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r46",
+      "name": "阿里高原",
+      "center_lat": 33.0,
+      "center_lng": 80.0,
+      "radius_km": 180,
+      "elevation_range": [
+        4000,
+        5500
+      ],
+      "temp_range": [
+        -15,
+        3
+      ],
+      "humid_range": [
+        5,
+        30
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r47",
+      "name": "柴达木盆地",
+      "center_lat": 37.0,
+      "center_lng": 96.0,
+      "radius_km": 180,
+      "elevation_range": [
+        2600,
+        3500
+      ],
+      "temp_range": [
+        -3,
+        10
+      ],
+      "humid_range": [
+        15,
+        45
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r48",
+      "name": "三江源",
+      "center_lat": 34.5,
+      "center_lng": 98.0,
+      "radius_km": 160,
+      "elevation_range": [
+        3500,
+        4800
+      ],
+      "temp_range": [
+        -8,
+        6
+      ],
+      "humid_range": [
+        25,
+        60
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r49",
+      "name": "祁连山",
+      "center_lat": 38.5,
+      "center_lng": 99.5,
+      "radius_km": 150,
+      "elevation_range": [
+        2500,
+        4500
+      ],
+      "temp_range": [
+        -6,
+        8
+      ],
+      "humid_range": [
+        20,
+        50
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r50",
+      "name": "川西-甘孜",
+      "center_lat": 31.5,
+      "center_lng": 100.5,
+      "radius_km": 140,
+      "elevation_range": [
+        2500,
+        4500
+      ],
+      "temp_range": [
+        -2,
+        14
+      ],
+      "humid_range": [
+        45,
+        70
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r51",
+      "name": "川西-阿坝",
+      "center_lat": 32.5,
+      "center_lng": 103.0,
+      "radius_km": 120,
+      "elevation_range": [
+        2000,
+        3800
+      ],
+      "temp_range": [
+        -2,
+        13
+      ],
+      "humid_range": [
+        50,
+        75
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r52",
+      "name": "北天山",
+      "center_lat": 43.0,
+      "center_lng": 85.0,
+      "radius_km": 200,
+      "elevation_range": [
+        1500,
+        4500
+      ],
+      "temp_range": [
+        -12,
+        6
+      ],
+      "humid_range": [
+        15,
+        45
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r53",
+      "name": "南天山",
+      "center_lat": 41.5,
+      "center_lng": 82.0,
+      "radius_km": 200,
+      "elevation_range": [
+        1000,
+        3500
+      ],
+      "temp_range": [
+        -8,
+        10
+      ],
+      "humid_range": [
+        15,
+        45
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "alpine": 0.7,
+          "boreal": 0.2,
+          "arid": 0.1
+        },
+        "terrain_type": {
+          "sharp_mountains": 0.5,
+          "plateau": 0.3,
+          "grassland_steppe": 0.15,
+          "rolling_hills": 0.05
+        },
+        "vegetation_zone": {
+          "alpine_meadow": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.15,
+          "desert_scrub": 0.1,
+          "conifer_forest": 0.05
+        },
+        "urbanization": {
+          "wilderness": 0.55,
+          "rural": 0.25,
+          "village": 0.15,
+          "small_town": 0.05
+        },
+        "architecture_style": {
+          "none_visible": 0.45,
+          "tibetan_stone": 0.3,
+          "traditional_official": 0.15,
+          "old_residential": 0.1
+        },
+        "pavement_type": {
+          "natural": 0.6,
+          "not_visible": 0.3,
+          "asphalt": 0.05,
+          "grey_concrete": 0.05
+        },
+        "language_script": {
+          "tibetan": 0.5,
+          "simplified_chinese": 0.4,
+          "bilingual_cn_en": 0.1
+        },
+        "soil_color": {
+          "brown": 0.35,
+          "grey": 0.35,
+          "yellow": 0.2,
+          "white": 0.1
+        },
+        "sky_quality": {
+          "clear_blue": 0.75,
+          "grey_hazy": 0.15,
+          "dusty_yellow": 0.1
+        },
+        "mountain_rock_type": {
+          "snow_peaks_glaciers": 0.4,
+          "none_visible": 0.3,
+          "alpine_lakes": 0.2,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "none_visible": 0.7,
+          "chinese_red_pine": 0.15,
+          "poplar": 0.15
+        },
+        "building_height": {
+          "none_visible": 0.65,
+          "low_rise": 0.35
+        },
+        "water_type": {
+          "lake": 0.35,
+          "river": 0.25,
+          "glacier": 0.2,
+          "stream": 0.15,
+          "none_visible": 0.05
+        },
+        "landform_detail": {
+          "alpine_meadow": 0.3,
+          "snow_peaks_glaciers": 0.25,
+          "plateau_plain": 0.25,
+          "none_visible": 0.2
+        },
+        "scene_type": {
+          "grassland": 0.35,
+          "mountain_trail_snow": 0.3,
+          "wilderness_forest": 0.15,
+          "tourist_scenic": 0.1,
+          "mountain_trail_granite": 0.1
+        }
+      }
+    },
+    {
+      "id": "r54",
+      "name": "伊犁河谷",
+      "center_lat": 43.5,
+      "center_lng": 82.5,
+      "radius_km": 120,
+      "elevation_range": [
+        500,
+        2500
+      ],
+      "temp_range": [
+        -5,
+        12
+      ],
+      "humid_range": [
+        35,
+        60
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "temperate": 0.85,
+          "subtropical": 0.1,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "farmland_plain": 0.45,
+          "rolling_hills": 0.3,
+          "urban_flat": 0.15,
+          "sharp_mountains": 0.1
+        },
+        "vegetation_zone": {
+          "cropland": 0.4,
+          "broadleaf_deciduous": 0.25,
+          "mixed_forest": 0.15,
+          "grassland": 0.1,
+          "sparse": 0.1
+        },
+        "urbanization": {
+          "medium_city": 0.3,
+          "small_town": 0.3,
+          "village": 0.2,
+          "metropolis": 0.1,
+          "rural": 0.1
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.25,
+          "modern_glass": 0.15,
+          "courtyard": 0.15,
+          "traditional_official": 0.05
+        },
+        "pavement_type": {
+          "asphalt": 0.4,
+          "grey_concrete": 0.35,
+          "red_brick_tiles": 0.1,
+          "natural": 0.1,
+          "not_visible": 0.05
+        },
+        "language_script": {
+          "simplified_chinese": 0.95,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "brown": 0.4,
+          "loess_yellow": 0.3,
+          "grey": 0.2,
+          "yellow": 0.1
+        },
+        "sky_quality": {
+          "grey_hazy": 0.5,
+          "clear_blue": 0.35,
+          "dusty_yellow": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.8,
+          "quartz_sandstone_pillars": 0.1,
+          "granite_spheroidal": 0.1
+        },
+        "tree_species": {
+          "poplar": 0.3,
+          "plane_tree": 0.25,
+          "gingko": 0.2,
+          "none_visible": 0.15,
+          "camphor": 0.1
+        },
+        "building_height": {
+          "mid_rise": 0.35,
+          "low_rise": 0.4,
+          "high_rise": 0.15,
+          "none_visible": 0.1
+        },
+        "water_type": {
+          "river": 0.4,
+          "none_visible": 0.35,
+          "lake": 0.15,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "urban_flat": 0.35,
+          "plateau_plain": 0.35,
+          "none_visible": 0.2,
+          "river_canyon": 0.1
+        },
+        "scene_type": {
+          "city_street": 0.35,
+          "rural_village": 0.3,
+          "grassland": 0.15,
+          "river_valley": 0.1,
+          "tourist_scenic": 0.1
+        }
+      }
+    },
+    {
+      "id": "r55",
+      "name": "塔克拉玛干",
+      "center_lat": 39.0,
+      "center_lng": 83.0,
+      "radius_km": 250,
+      "elevation_range": [
+        800,
+        1500
+      ],
+      "temp_range": [
+        0,
+        20
+      ],
+      "humid_range": [
+        10,
+        40
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r56",
+      "name": "喀什-叶尔羌绿洲",
+      "center_lat": 39.5,
+      "center_lng": 76.0,
+      "radius_km": 120,
+      "elevation_range": [
+        1000,
+        2000
+      ],
+      "temp_range": [
+        2,
+        16
+      ],
+      "humid_range": [
+        20,
+        50
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r57",
+      "name": "准噶尔盆地",
+      "center_lat": 45.5,
+      "center_lng": 87.0,
+      "radius_km": 180,
+      "elevation_range": [
+        300,
+        1000
+      ],
+      "temp_range": [
+        -5,
+        15
+      ],
+      "humid_range": [
+        15,
+        50
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r58",
+      "name": "阿尔泰山区",
+      "center_lat": 47.0,
+      "center_lng": 88.5,
+      "radius_km": 130,
+      "elevation_range": [
+        500,
+        2500
+      ],
+      "temp_range": [
+        -10,
+        5
+      ],
+      "humid_range": [
+        30,
+        60
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r59",
+      "name": "呼伦贝尔草原",
+      "center_lat": 49.5,
+      "center_lng": 119.5,
+      "radius_km": 200,
+      "elevation_range": [
+        500,
+        1200
+      ],
+      "temp_range": [
+        -20,
+        2
+      ],
+      "humid_range": [
+        40,
+        70
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "boreal": 0.8,
+          "temperate": 0.2
+        },
+        "terrain_type": {
+          "rolling_hills": 0.4,
+          "farmland_plain": 0.3,
+          "sharp_mountains": 0.15,
+          "grassland_steppe": 0.15
+        },
+        "vegetation_zone": {
+          "conifer_forest": 0.35,
+          "mixed_forest": 0.3,
+          "broadleaf_deciduous": 0.2,
+          "cropland": 0.1,
+          "grassland": 0.05
+        },
+        "urbanization": {
+          "small_town": 0.35,
+          "rural": 0.3,
+          "village": 0.2,
+          "wilderness": 0.1,
+          "medium_city": 0.05
+        },
+        "architecture_style": {
+          "modern_residential": 0.4,
+          "old_residential": 0.35,
+          "none_visible": 0.15,
+          "soviet_industrial": 0.1
+        },
+        "pavement_type": {
+          "asphalt": 0.35,
+          "grey_concrete": 0.3,
+          "natural": 0.25,
+          "not_visible": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.85,
+          "bilingual_cn_en": 0.1,
+          "mongolian": 0.05
+        },
+        "soil_color": {
+          "black": 0.45,
+          "brown": 0.35,
+          "grey": 0.2
+        },
+        "sky_quality": {
+          "clear_blue": 0.55,
+          "grey_hazy": 0.45
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "granite_spheroidal": 0.2,
+          "quartz_sandstone_pillars": 0.1
+        },
+        "tree_species": {
+          "chinese_red_pine": 0.3,
+          "poplar": 0.25,
+          "none_visible": 0.25,
+          "plane_tree": 0.1,
+          "gingko": 0.1
+        },
+        "building_height": {
+          "low_rise": 0.55,
+          "none_visible": 0.25,
+          "mid_rise": 0.15,
+          "high_rise": 0.05
+        },
+        "water_type": {
+          "river": 0.35,
+          "none_visible": 0.3,
+          "lake": 0.2,
+          "stream": 0.15
+        },
+        "landform_detail": {
+          "plateau_plain": 0.35,
+          "none_visible": 0.3,
+          "river_canyon": 0.25,
+          "urban_flat": 0.1
+        },
+        "scene_type": {
+          "rural_village": 0.35,
+          "wilderness_forest": 0.25,
+          "grassland": 0.2,
+          "city_street": 0.15,
+          "river_valley": 0.05
+        }
+      }
+    },
+    {
+      "id": "r60",
+      "name": "锡林郭勒草原",
+      "center_lat": 43.5,
+      "center_lng": 115.0,
+      "radius_km": 180,
+      "elevation_range": [
+        800,
+        1500
+      ],
+      "temp_range": [
+        -5,
+        10
+      ],
+      "humid_range": [
+        20,
+        50
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r61",
+      "name": "鄂尔多斯高原",
+      "center_lat": 40.5,
+      "center_lng": 107.5,
+      "radius_km": 120,
+      "elevation_range": [
+        900,
+        2000
+      ],
+      "temp_range": [
+        0,
+        12
+      ],
+      "humid_range": [
+        15,
+        45
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r62",
+      "name": "河套平原",
+      "center_lat": 40.5,
+      "center_lng": 109.5,
+      "radius_km": 100,
+      "elevation_range": [
+        900,
+        1300
+      ],
+      "temp_range": [
+        2,
+        15
+      ],
+      "humid_range": [
+        25,
+        55
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    },
+    {
+      "id": "r63",
+      "name": "河西走廊",
+      "center_lat": 39.5,
+      "center_lng": 99.5,
+      "radius_km": 200,
+      "elevation_range": [
+        1000,
+        2000
+      ],
+      "temp_range": [
+        0,
+        14
+      ],
+      "humid_range": [
+        10,
+        40
+      ],
+      "fingerprint": {
+        "climate_zone": {
+          "arid": 0.8,
+          "temperate": 0.15,
+          "boreal": 0.05
+        },
+        "terrain_type": {
+          "desert_dunes": 0.4,
+          "plateau": 0.25,
+          "grassland_steppe": 0.2,
+          "rolling_hills": 0.15
+        },
+        "vegetation_zone": {
+          "desert_scrub": 0.4,
+          "grassland": 0.3,
+          "sparse": 0.25,
+          "cropland": 0.05
+        },
+        "urbanization": {
+          "rural": 0.4,
+          "village": 0.25,
+          "wilderness": 0.2,
+          "small_town": 0.15
+        },
+        "architecture_style": {
+          "old_residential": 0.3,
+          "none_visible": 0.3,
+          "modern_residential": 0.25,
+          "traditional_official": 0.15
+        },
+        "pavement_type": {
+          "natural": 0.45,
+          "grey_concrete": 0.25,
+          "not_visible": 0.2,
+          "asphalt": 0.1
+        },
+        "language_script": {
+          "simplified_chinese": 0.55,
+          "uyghur_arabic": 0.25,
+          "mongolian": 0.15,
+          "bilingual_cn_en": 0.05
+        },
+        "soil_color": {
+          "grey": 0.3,
+          "yellow": 0.3,
+          "brown": 0.2,
+          "loess_yellow": 0.2
+        },
+        "sky_quality": {
+          "dusty_yellow": 0.45,
+          "clear_blue": 0.4,
+          "grey_hazy": 0.15
+        },
+        "mountain_rock_type": {
+          "none_visible": 0.7,
+          "red_sandstone_danxia": 0.15,
+          "quartz_sandstone_pillars": 0.15
+        },
+        "tree_species": {
+          "none_visible": 0.65,
+          "poplar": 0.2,
+          "plane_tree": 0.1,
+          "chinese_red_pine": 0.05
+        },
+        "building_height": {
+          "low_rise": 0.5,
+          "none_visible": 0.4,
+          "mid_rise": 0.1
+        },
+        "water_type": {
+          "none_visible": 0.6,
+          "river": 0.2,
+          "lake": 0.1,
+          "stream": 0.1
+        },
+        "landform_detail": {
+          "none_visible": 0.4,
+          "plateau_plain": 0.35,
+          "granite_boulder_field": 0.15,
+          "desert": 0.1
+        },
+        "scene_type": {
+          "desert": 0.35,
+          "grassland": 0.3,
+          "rural_village": 0.15,
+          "wilderness_forest": 0.1,
+          "city_street": 0.1
+        }
+      }
+    }
+  ]
+}

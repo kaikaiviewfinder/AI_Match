@@ -1,0 +1,52 @@
+基于宏观: {prev_output}
+
+现在观察省级尺度细节，填入下方 JSON 字段。每个字段必须从给定的英文值中选择。
+
+字段定义：
+
+language_script: 文字/标识
+  选项: simplified_chinese | traditional_chinese | tibetan | uyghur_arabic | mongolian | dai | thai | korean | japanese | devanagari | latin_only | cyrillic | arabic | bilingual_cn_en | none_visible
+
+visible_text: 可见文字内容地理相关性分类（重要！不要按文字字面内容定位）
+  关键原则: "湖南湘菜馆"开在深圳 = 排除湖南，不是确认湖南！跨地域店铺是反信号。
+  选项:
+    local_government     — 本地政府机关（"深圳市公安局"= 确认深圳）
+    local_phone_code     — 本地电话区号（0755 = 确认深圳）
+    local_license_plate  — 本地车牌（粤B = 确认深圳）
+    local_street_sign    — 本地路牌/门牌
+    cross_region_shop    — 跨地域店铺名（"湖南湘菜馆""新疆羊肉串"= 排除其指代地区）
+    national_chain       — 全国连锁（肯德基/星巴克 = 无地理信号）
+    national_slogan      — 全国性标语（"社会主义核心价值观" = 无地理信号）
+    none_visible         — 无可见文字或无法辨认
+
+architecture_style: 建筑风格 (如可见)
+  选项: none_visible | modern_glass | modern_residential | old_residential | hui_style | tibetan_stone | courtyard | arcade | stilt_house | tulou | shikumen | traditional_official | soviet_industrial
+
+tree_species: 能辨认的树种列表 (不确定就空着)
+  选项: banyan | camphor | plane_tree | gingko | poplar | willow | coconut_palm | chinese_red_pine | huangshan_pine | bamboo
+  示例: ["camphor", "banyan"]
+
+mountain_rock_type: 山体地质 (仅当看到山，否则填 null)
+  选项: granite_spheroidal | quartz_sandstone_pillars | limestone_karst | red_sandstone_danxia | snow_peaks_glaciers | alpine_lakes | null
+
+infrastructure_tags: 特殊设施标签
+  选项: electric_scooters | tibetan_signs | cable_cars | none_visible
+
+sky_quality: 天空状态
+  选项: clear_blue | cloudy | overcast_grey | grey_hazy | dusty_yellow | thick_fog
+
+likely_provinces: 最像的中国省份 (1-3个英文名，如 ["Sichuan", "Yunnan"])
+
+输出 JSON(只输出JSON，不要其他内容):
+```json
+{{
+  "language_script": "...",
+  "visible_text": "...",
+  "architecture_style": "...",
+  "tree_species": [...],
+  "mountain_rock_type": "...",
+  "infrastructure_tags": [...],
+  "sky_quality": "...",
+  "likely_provinces": ["..."]
+}}
+```

@@ -1,0 +1,39 @@
+# Default configuration for TuXun project
+
+paths:
+  data_dir: data
+  model_dir: models
+  output_dir: output
+  panorama_dir: data/panoramas
+  reasoning_dir: data/geocot_reasoning
+  prediction_dir: data/geocot_predictions
+  ground_truth: src/Geoeval/Ground Truth.csv
+  hallucination_dir: Hallucination
+
+model:
+  name: Qwen/Qwen2-VL-7B-Instruct
+  device: auto
+  torch_dtype: bfloat16
+  max_image_size: [1120, 1120]
+  max_output_tokens: 2048
+
+inference:
+  temperature: 0.7
+  top_p: 0.9
+  batch_size: 1
+
+geocot:
+  stages:
+    - macro
+    - regional
+    - local
+  max_tokens_per_stage:
+    macro: 150
+    regional: 200
+    local: 300
+  few_shot_count: 3
+  cache_image_embeddings: true
+
+evaluation:
+  distance_thresholds: [1, 25, 750]
+  classification_levels: [city, country, continent]
