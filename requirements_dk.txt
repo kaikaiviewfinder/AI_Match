@@ -1,0 +1,7 @@
+# Minimal dependencies for DK-2500 edge deployment
+# Only onnxruntime + numpy + pillow — no PyTorch, no CUDA
+# Total install size < 200 MB
+
+onnxruntime>=1.18.0
+numpy>=1.26.0
+Pillow>=10.0.0
