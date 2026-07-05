@@ -215,7 +215,8 @@ def main():
 
     # Auto-detect model path
     if args.model is None:
-        deploy_dir = Path("D:/Geocomp/output/geovlm_deploy")
+        repo_root = Path(__file__).resolve().parent.parent
+        deploy_dir = repo_root / "models"
         if args.backend == "ascend":
             candidate = deploy_dir / "geovlm_deploy.om"
         else:
