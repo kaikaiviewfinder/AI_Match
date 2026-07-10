@@ -167,8 +167,16 @@ class DKGeoLocator:
                elevation_m: float = 500.0,
                temperature_c: float = 20.0,
                humidity_pct: float = 60.0,
+               prev_humidity_pct: Optional[float] = None,
                ) -> dict:
-        """Run full pipeline: image + sensors → lat/lng.
+        """Run full pipeline: image + sensors → lat/lng + risk assessment.
+
+        Args:
+            image_path: path to photo
+            elevation_m: current elevation from barometer
+            temperature_c: current temperature from sensor
+            humidity_pct: current relative humidity (0–100)
+            prev_humidity_pct: humidity ~30 min ago for weather trend detection
 
         Returns dict with keys:
           lat, lng           — predicted coordinates
@@ -176,6 +184,7 @@ class DKGeoLocator:
           confidence         — fusion confidence score
           timing_ms          — per-stage timing breakdown
           field_predictions  — raw GeoVLM field outputs
+          risk               — outdoor hazard assessment (level, hazards, mitigations)
         """
         timing = {}
 
@@ -202,6 +211,18 @@ class DKGeoLocator:
         )
         timing["fusion_ms"] = (time.perf_counter() - t0) * 1000
 
+        # ── 4. Safety risk assessment ──────────────────────────────
+        t0 = time.perf_counter()
+        from safety_risk import quick_risk
+        risk = quick_risk(
+            field_preds,
+            elev=elevation_m,
+            temp=temperature_c,
+            humid=humidity_pct,
+            prev_humid=prev_humidity_pct,
+        )
+        timing["risk_ms"] = (time.perf_counter() - t0) * 1000
+
         return {
             "lat": round(result.latitude, 6),
             "lng": round(result.longitude, 6),
@@ -211,6 +232,7 @@ class DKGeoLocator:
             "field_predictions": {
                 f: field_preds.get(f, "UNKNOWN") for f in ONTO_FIELDS
             },
+            "risk": risk,
         }
 
 
@@ -226,6 +248,8 @@ def main():
                         help="Sensor temperature (C)")
     parser.add_argument("--humid", type=float, default=60.0,
                         help="Sensor humidity (%%)")
+    parser.add_argument("--prev-humid", type=float, default=None,
+                        help="Humidity ~30 min ago for weather trend detection")
     parser.add_argument("--json", action="store_true",
                         help="Output as JSON")
     args = parser.parse_args()
@@ -241,6 +265,7 @@ def main():
         elevation_m=args.elev,
         temperature_c=args.temp,
         humidity_pct=args.humid,
+        prev_humidity_pct=args.prev_humid,
     )
     total_ms = (time.perf_counter() - t_total) * 1000
 
@@ -249,6 +274,7 @@ def main():
         print(json.dumps(result, indent=2, ensure_ascii=False))
     else:
         t = result["timing_ms"]
+        r = result["risk"]
         print(f"\n{'='*55}")
         print(f"  DK-2500 Geolocation Result")
         print(f"{'='*55}")
@@ -257,10 +283,25 @@ def main():
         print(f"\n  Predicted:  {result['lat']:.6f}, {result['lng']:.6f}")
         print(f"  Uncertainty: {result['uncertainty_km']:.0f} km")
         print(f"  Confidence:  {result['confidence']:.2f}")
+        print(f"\n  ── Safety Risk Assessment ──")
+        print(f"  Risk Level:  {r['risk_level'].upper()}")
+        print(f"  Risk Score:  {r['risk_score']:.2f}")
+        if r['weather_alert']:
+            print(f"  Weather:     {r['weather_alert']}")
+        if r['hazards']:
+            print(f"  Hazards:")
+            for h in r['hazards']:
+                print(f"    [{h['type']}] {h['description'][:60]}")
+        if r['mitigations']:
+            print(f"  Mitigations:")
+            for m in r['mitigations'][:3]:
+                print(f"    → {m}")
         print(f"\n  Timing:")
         print(f"    Preprocess:  {t['preprocess_ms']:5.0f} ms")
         print(f"    GeoVLM:      {t['geovlm_ms']:5.0f} ms")
         print(f"    Fusion:      {t['fusion_ms']:5.0f} ms")
+        if 'risk_ms' in t:
+            print(f"    Risk:        {t['risk_ms']:5.0f} ms")
         print(f"    Total:       {total_ms:5.0f} ms")
         print(f"\n  Field Predictions:")
         for field, value in result["field_predictions"].items():
