@@ -35,7 +35,6 @@ export default function SensorsPage() {
         <h3 className="text-sm font-semibold text-[#0F172A] mb-4">Live Sensor Data</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           {state && [
-            ['VIO Step', `${state.last_vio_delta_m?.toFixed(3)}m`],
             ['Barometer Alt', state.baro_altitude_m != null ? `${state.baro_altitude_m.toFixed(1)}m` : 'No data'],
             ['GPS Age', state.gps_age_s != null ? `${Math.abs(state.gps_age_s).toFixed(1)}s ago` : '--'],
             ['Altitude Error', state.altitude_error_m != null ? `${state.altitude_error_m.toFixed(1)}m` : '--'],

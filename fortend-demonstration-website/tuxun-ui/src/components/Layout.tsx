@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react'
 import { cn } from '../lib/utils'
 import {
   LayoutDashboard, Route, Cpu, Activity, Database, Settings, Info,
-  Menu, X, MapPin, Satellite, Thermometer, Camera
+  Menu, X, MapPin, Satellite, Thermometer
 } from 'lucide-react'
 
 const navItems = [
@@ -100,10 +100,6 @@ export default function Layout({ active, onNavigate, connected, state, children 
             <div className="flex items-center gap-1.5">
               <Thermometer size={14} />
               <span>Alt {state?.matched_z?.toFixed(1) || '--'}m</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Camera size={14} />
-              <span>VIO {state?.last_vio_delta_m?.toFixed(2) || '--'}m</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Activity size={14} />

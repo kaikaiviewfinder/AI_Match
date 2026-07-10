@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import * as ROSLIB from 'roslib'
+import { useSyncExternalStore, useCallback } from 'react'
 
 export type RouteState = {
   s_m: number; route_length_m: number; progress: number
@@ -17,126 +16,174 @@ export type PathPoint = { x: number; y: number; z: number; s: number; progress: 
 export type VioPoint = { x: number; y: number; z: number }
 export type AlignedVioPoint = { x: number; y: number; z: number }
 
+const ROSBRIDGE_URL = 'ws://localhost:9090'
+
+// ─────────────────────────────────────────────────────────────
+// Module-level singleton: ONE WebSocket + ONE accumulation state,
+// shared across every component that calls useRosBridge(). This keeps
+// the trajectory intact when navigating between pages and avoids
+// opening a new rosbridge connection per component.
+// ─────────────────────────────────────────────────────────────
+
+// Working (mutable) state
+let wConnected = false
+let wState: RouteState | null = null
+const wGps: GpsFix[] = []
+const wPath: PathPoint[] = []
+let wVio: AlignedVioPoint[] = []
+
+// VIO alignment: estimate the VINS-world→route rotation+scale ONCE, then FREEZE it.
+// After freezing, new points are appended by integrating raw VIO deltas, so the
+// already-drawn portion of the green line never moves.
+const vioRaw: VioPoint[] = []
+const pairs: { vx: number; vy: number; mx: number; my: number }[] = []
+let firstMatch: { x: number; y: number; z: number } | null = null
+let lastRaw: VioPoint | null = null
+let align: { theta: number; scale: number } | null = null   // null until frozen
+
+function estimateAlign(): { theta: number; scale: number } | null {
+  const n = pairs.length
+  if (n < 30) return null
+  // require enough travel for a stable heading
+  const first = pairs[0], last = pairs[n - 1]
+  const matchSpan = Math.hypot(last.mx - first.mx, last.my - first.my)
+  if (matchSpan < 6) return null
+  let mvx = 0, mvy = 0, mmx = 0, mmy = 0
+  for (const p of pairs) { mvx += p.vx; mvy += p.vy; mmx += p.mx; mmy += p.my }
+  mvx /= n; mvy /= n; mmx /= n; mmy /= n
+  let Sc = 0, Ss = 0, varP = 0
+  for (const p of pairs) {
+    const px = p.vx - mvx, py = p.vy - mvy
+    const qx = p.mx - mmx, qy = p.my - mmy
+    Sc += px * qx + py * qy
+    Ss += px * qy - py * qx
+    varP += px * px + py * py
+  }
+  if (varP < 1) return null
+  const theta = Math.atan2(Ss, Sc)
+  let scale = Math.sqrt(Sc * Sc + Ss * Ss) / varP
+  if (!isFinite(scale) || scale <= 0) scale = 1
+  if (scale < 0.3) scale = 0.3; else if (scale > 3) scale = 3
+  return { theta, scale }
+}
+
+// Build the historical green line ONCE at freeze time by integrating raw deltas
+// from the anchor (first matched position). Called only when align is set.
+function rebuildVioFromRaw() {
+  if (!align || !firstMatch || vioRaw.length < 1) return
+  const cos = Math.cos(align.theta), sin = Math.sin(align.theta)
+  wVio = [{ x: firstMatch.x, y: firstMatch.y, z: firstMatch.z }]
+  for (let i = 1; i < vioRaw.length; i++) {
+    const dx = (vioRaw[i].x - vioRaw[i - 1].x) * align.scale
+    const dy = (vioRaw[i].y - vioRaw[i - 1].y) * align.scale
+    const dz = (vioRaw[i].z - vioRaw[i - 1].z)
+    const prev = wVio[wVio.length - 1]
+    wVio.push({ x: prev.x + (cos * dx - sin * dy), y: prev.y + (sin * dx + cos * dy), z: prev.z + dz })
+  }
+  lastRaw = vioRaw[vioRaw.length - 1]
+}
+
+// ── React snapshot + throttled commit (~15 fps) ──
+let snap = {
+  connected: false, state: null as RouteState | null,
+  gpsFixes: [] as GpsFix[], pathHistory: [] as PathPoint[], alignedVioPath: [] as AlignedVioPoint[],
+}
+const listeners = new Set<() => void>()
+let commitTimer: ReturnType<typeof setTimeout> | null = null
+function commitSoon() {
+  if (commitTimer) return
+  commitTimer = setTimeout(() => {
+    commitTimer = null
+    snap = {
+      connected: wConnected, state: wState,
+      gpsFixes: wGps.slice(), pathHistory: wPath.slice(), alignedVioPath: wVio.slice(),
+    }
+    listeners.forEach(l => l())
+  }, 66)
+}
+
+function onState(d: RouteState) {
+  wState = d
+  wPath.push({ x: d.matched_x, y: d.matched_y, z: d.matched_z, s: d.s_m, progress: d.progress, confidence: d.confidence })
+  if (wPath.length > 600) wPath.shift()
+  if (!firstMatch && d.matched_x !== undefined) firstMatch = { x: d.matched_x, y: d.matched_y, z: d.matched_z }
+  // Collect calibration correspondences only until the transform is frozen
+  if (!align && vioRaw.length > 0 && d.matched_x !== undefined) {
+    const v = vioRaw[vioRaw.length - 1]
+    pairs.push({ vx: v.x, vy: v.y, mx: d.matched_x, my: d.matched_y })
+    if (pairs.length > 800) pairs.shift()
+    const est = estimateAlign()
+    if (est) { align = est; rebuildVioFromRaw() }   // freeze + build history once
+  }
+  commitSoon()
+}
+
+function onGps(msg: any) {
+  if (msg?.status?.status >= 0) {
+    wGps.push({ lat: msg.latitude, lon: msg.longitude, alt: msg.altitude, time: Date.now() })
+    if (wGps.length > 120) wGps.shift()
+    commitSoon()
+  }
+}
+
+function onOdom(msg: any) {
+  const p = msg?.pose?.pose?.position
+  if (!p || typeof p.x !== 'number') return
+  vioRaw.push({ x: p.x, y: p.y, z: p.z })
+  if (vioRaw.length > 2000) vioRaw.shift()
+  // Once frozen, append incrementally so past points stay fixed
+  if (align && lastRaw) {
+    const cos = Math.cos(align.theta), sin = Math.sin(align.theta)
+    const dx = (p.x - lastRaw.x) * align.scale
+    const dy = (p.y - lastRaw.y) * align.scale
+    const dz = (p.z - lastRaw.z)
+    const prev = wVio.length ? wVio[wVio.length - 1] : (firstMatch || { x: 0, y: 0, z: 0 })
+    wVio.push({ x: prev.x + (cos * dx - sin * dy), y: prev.y + (sin * dx + cos * dy), z: prev.z + dz })
+    if (wVio.length > 1200) wVio.shift()
+    commitSoon()
+  }
+  lastRaw = { x: p.x, y: p.y, z: p.z }
+}
+
+let started = false
+function start() {
+  if (started) return
+  started = true
+  let ws: WebSocket | null = null
+  const connect = () => {
+    ws = new WebSocket(ROSBRIDGE_URL)
+    ws.onopen = () => {
+      wConnected = true; commitSoon()
+      const subs = [
+        { topic: '/route_matcher/state', type: 'std_msgs/String' },
+        { topic: '/gps', type: 'sensor_msgs/NavSatFix' },
+        { topic: '/vins_estimator/odometry', type: 'nav_msgs/Odometry' },
+      ]
+      for (const s of subs) ws!.send(JSON.stringify({ op: 'subscribe', topic: s.topic, type: s.type }))
+    }
+    ws.onmessage = (ev) => {
+      let parsed: any
+      try { parsed = JSON.parse(ev.data) } catch { return }
+      if (parsed.op !== 'publish') return
+      if (parsed.topic === '/route_matcher/state') { try { onState(JSON.parse(parsed.msg.data)) } catch { /* */ } }
+      else if (parsed.topic === '/gps') onGps(parsed.msg)
+      else if (parsed.topic === '/vins_estimator/odometry') onOdom(parsed.msg)
+    }
+    ws.onclose = () => { wConnected = false; commitSoon(); setTimeout(connect, 1500) }
+    ws.onerror = () => { wConnected = false; commitSoon(); ws?.close() }
+  }
+  connect()
+}
+
+function subscribe(cb: () => void) {
+  listeners.add(cb)
+  start()
+  return () => { listeners.delete(cb) }
+}
+function getSnapshot() { return snap }
+
 export function useRosBridge() {
-  const [connected, setConnected] = useState(false)
-  const [state, setState] = useState<RouteState | null>(null)
-  const [gpsFixes, setGpsFixes] = useState<GpsFix[]>([])
-  const [pathHistory, setPathHistory] = useState<PathPoint[]>([])
-  const [alignedVioPath, setAlignedVioPath] = useState<AlignedVioPoint[]>([])
-
-  const rosRef = useRef<ROSLIB.Ros | null>(null)
-  const vioRawRef = useRef<VioPoint[]>([])     // raw VIO in world frame
-  const vioOffsetRef = useRef<{ x: number; y: number; z: number } | null>(null)
-  const firstMatchRef = useRef<{ x: number; y: number; z: number } | null>(null)
-
-  useEffect(() => {
-    const ros = new ROSLIB.Ros({ url: 'ws://localhost:9090' })
-    rosRef.current = ros
-
-    ros.on('connection', () => setConnected(true))
-    ros.on('close', () => setConnected(false))
-    ros.on('error', () => setConnected(false))
-
-    // Route matcher state
-    const stateSub = new ROSLIB.Topic({
-      ros, name: '/route_matcher/state', messageType: 'std_msgs/String'
-    })
-    stateSub.subscribe((msg: { data: string }) => {
-      try {
-        const d = JSON.parse(msg.data) as RouteState
-        setState(d)
-        setPathHistory(prev => {
-          const next = [...prev, {
-            x: d.matched_x, y: d.matched_y, z: d.matched_z,
-            s: d.s_m, progress: d.progress, confidence: d.confidence
-          }]
-          return next.length > 600 ? next.slice(-600) : next
-        })
-
-        // Record first matched position for VIO alignment
-        if (!firstMatchRef.current && d.matched_x !== undefined) {
-          firstMatchRef.current = { x: d.matched_x, y: d.matched_y, z: d.matched_z }
-        }
-
-        // Align raw VIO to route frame using VIO delta direction
-        // We use the matched path's local movement to rotate VIO steps
-        const delta = d.last_vio_delta_m || 0
-        if (vioRawRef.current.length > 0 && firstMatchRef.current) {
-          const lastVio = vioRawRef.current[vioRawRef.current.length - 1]
-          const prevLen = vioRawRef.current.length
-          if (prevLen >= 2) {
-            const prevVio = vioRawRef.current[prevLen - 2]
-            const dvx = lastVio.x - prevVio.x
-            const dvy = lastVio.y - prevVio.y
-            const dvz = lastVio.z - prevVio.z
-            const dvDist = Math.sqrt(dvx * dvx + dvy * dvy + dvz * dvz) || 1
-            // Scale VIO step to match VIO delta distance, but keep direction
-            const scale = delta / dvDist
-            setAlignedVioPath(prev => {
-              const lastAligned = prev.length > 0 ? prev[prev.length - 1] : firstMatchRef.current!
-              const next = [...prev, {
-                x: lastAligned.x + dvx * scale,
-                y: lastAligned.y + dvy * scale,
-                z: lastAligned.z + dvz * scale
-              }]
-              return next.length > 800 ? next.slice(-800) : next
-            })
-          }
-        }
-      } catch {}
-    })
-
-    // GPS
-    const gpsSub = new ROSLIB.Topic({
-      ros, name: '/gps', messageType: 'sensor_msgs/NavSatFix'
-    })
-    gpsSub.subscribe((msg: any) => {
-      if (msg?.status?.status >= 0) {
-        setGpsFixes(prev => {
-          const next = [...prev, { lat: msg.latitude, lon: msg.longitude, alt: msg.altitude, time: Date.now() }]
-          return next.length > 120 ? next.slice(-120) : next
-        })
-      }
-    })
-
-    // VINS raw odometry - record raw positions in world frame
-    const vioSub = new ROSLIB.Topic({
-      ros, name: '/vins_estimator/odometry', messageType: 'nav_msgs/Odometry'
-    })
-    vioSub.subscribe((msg: any) => {
-      const p = msg?.pose?.pose?.position
-      if (p && typeof p.x === 'number') {
-        vioRawRef.current.push({ x: p.x, y: p.y, z: p.z })
-        if (vioRawRef.current.length > 800) vioRawRef.current = vioRawRef.current.slice(-800)
-
-        // If no offset yet and we have both VIO and matched data, compute offset
-        if (!vioOffsetRef.current && firstMatchRef.current && vioRawRef.current.length >= 2) {
-          const firstVio = vioRawRef.current[0]
-          vioOffsetRef.current = {
-            x: firstMatchRef.current.x - firstVio.x,
-            y: firstMatchRef.current.y - firstVio.y,
-            z: firstMatchRef.current.z - firstVio.z
-          }
-        }
-
-        // If we have offset, publish aligned VIO
-        if (vioOffsetRef.current) {
-          const aligned = {
-            x: p.x + vioOffsetRef.current.x,
-            y: p.y + vioOffsetRef.current.y,
-            z: p.z + vioOffsetRef.current.z
-          }
-          setAlignedVioPath(prev => {
-            const next = [...prev, aligned]
-            return next.length > 800 ? next.slice(-800) : next
-          })
-        }
-      }
-    })
-
-    return () => { ros.close() }
-  }, [])
-
+  const s = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
   const gpsToLocal = useCallback((lon: number, lat: number, originLon: number, originLat: number) => {
     const R = 6378137
     const lat0r = originLat * Math.PI / 180
@@ -144,6 +191,5 @@ export function useRosBridge() {
     const dlat = (lat - originLat) * Math.PI / 180
     return { x: R * dlon * Math.cos(lat0r), y: R * dlat }
   }, [])
-
-  return { connected, state, gpsFixes, pathHistory, alignedVioPath, gpsToLocal }
+  return { ...s, gpsToLocal }
 }

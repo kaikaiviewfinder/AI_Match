@@ -48,9 +48,9 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     rospy.init_node("mjpeg_server", anonymous=True)
     rospy.Subscriber("/vins_estimator/image_track", Image, image_callback)
-    server = HTTPServer(("0.0.0.0", 8081), Handler)
-    print("MJPEG server on http://localhost:8081/stream")
-    rospy.loginfo("MJPEG server on http://localhost:8081/stream")
+    server = HTTPServer(("0.0.0.0", 8080), Handler)
+    print("MJPEG server on http://localhost:8080/stream")
+    rospy.loginfo("MJPEG server on http://localhost:8080/stream")
     threading.Thread(target=server.serve_forever, daemon=True).start()
     rospy.spin()
 

@@ -69,7 +69,7 @@ export default function ParticlesPage() {
         <h3 className="text-sm font-semibold text-[#0F172A] mb-3">Filter Updates</h3>
         <div className="space-y-2 text-sm">
           {[
-            ['Motion Update', `VIO ${s?.last_vio_delta_m?.toFixed(2) || '0'}m · noise ±0.5m`, '#3B82F6'],
+            ['Motion Update', 'Odometry-driven predict · noise ±0.5m', '#3B82F6'],
             ['GPS Update', s?.gps_age_s != null ? `Last fix ${Math.abs(s.gps_age_s).toFixed(0)}s ago · σ=${12}m` : 'Waiting...', '#F59E0B'],
             ['Altitude Update', s?.baro_altitude_m != null ? `${s.baro_altitude_m.toFixed(1)}m · σ=5m` : 'No barometer data', '#22C55E'],
             ['Slope Update', s ? `Route slope matching · σ=2m` : 'Waiting...', '#06B6D4'],
