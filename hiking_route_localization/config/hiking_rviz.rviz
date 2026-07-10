@@ -38,7 +38,7 @@ Visualization Manager:
       Enabled: true
       Name: Matched Odometry
       Topic: /route_matcher/matched_odometry
-      Color: 255; 25; 0
+      Color: 25; 100; 255
       Position Tolerance: 0.1
       Keep: 100
     - Class: rviz/Odometry

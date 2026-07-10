@@ -63,7 +63,7 @@ export default function Dashboard() {
         <div className="col-span-4 bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3 border-b border-[#E2E8F0]">
             <span className="text-sm font-semibold text-[#0F172A]">Live Camera Feed</span>
-            <span className="text-xs text-[#94A3B8]">VINS Feature Tracking</span>
+            <span className="text-xs text-[#94A3B8]">/cam0/image_raw</span>
           </div>
           <div className="aspect-video bg-black">
             <img
