@@ -69,10 +69,17 @@ ONTO_FIELDS = [
 
 
 def preprocess_image(image_path: str) -> np.ndarray:
-    """Load and resize image to 224², return [1,3,224,224] float32."""
+    """Load, resize, and normalize image to 224², return [1,3,224,224] float32.
+
+    Normalization matches ViTImageProcessor(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5]),
+    mapping raw [0,255] RGB to [-1, 1]. Without this, the ONNX model sees values
+    100× too large and produces garbage predictions.
+    """
     img = Image.open(image_path).convert("RGB")
     img = img.resize((224, 224), Image.BILINEAR)
-    arr = np.array(img, dtype=np.float32).transpose(2, 0, 1)  # CHW
+    arr = np.array(img, dtype=np.float32).transpose(2, 0, 1)  # CHW, [0, 255]
+    arr = arr / 255.0               # [0, 1]
+    arr = (arr - 0.5) / 0.5        # [-1, 1]
     return arr[np.newaxis, :, :, :]  # add batch dim
 
 
